@@ -55,11 +55,11 @@ _C.MODEL.RESUME = ''
 # -----------------------------------------------------------------------------
 _C.LOSS = CN()
 # Classification loss
-_C.LOSS.CLA_LOSS = 'crossentropy'
+_C.LOSS.CLA_LOSS = 'arcface'
 # Scale
 _C.LOSS.CLA_S = 16.
 # Margin
-_C.LOSS.CLA_M = 0.
+_C.LOSS.CLA_M = 0.1
 # Pairwise loss
 _C.LOSS.PAIR_LOSS = 'triplet'
 # Scale
@@ -71,7 +71,7 @@ _C.LOSS.PAIR_M = 0.3
 # -----------------------------------------------------------------------------
 _C.TRAIN = CN()
 _C.TRAIN.START_EPOCH = 0
-_C.TRAIN.MAX_EPOCH = 60
+_C.TRAIN.MAX_EPOCH = 10
 # Optimizer
 _C.TRAIN.OPTIMIZER = CN()
 _C.TRAIN.OPTIMIZER.NAME = 'adam'
@@ -106,7 +106,7 @@ _C.GPU = '0'
 # Path to output folder, overwritten by command line argument
 _C.OUTPUT = 'logs/'
 # Tag of experiment, overwritten by command line argument
-_C.TAG = 'res50-ce-tri'
+_C.TAG = 'res50-arcface-triplet'
 
 
 def update_config(config, args):
