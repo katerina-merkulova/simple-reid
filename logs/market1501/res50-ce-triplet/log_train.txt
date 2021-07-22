@@ -1,0 +1,50 @@
+==========
+Config:AUG:
+  RC_PROB: 0.5
+  RE_PROB: 0.5
+DATA:
+  CUHK03_CLASSIC_SPLIT: False
+  CUHK03_LABELED: False
+  DATASET: market1501
+  HEIGHT: 256
+  NUM_INSTANCES: 4
+  NUM_WORKERS: 4
+  ROOT: data
+  SPLIT_ID: 0
+  TEST_BATCH: 512
+  TRAIN_BATCH: 64
+  WIDTH: 128
+EVAL_MODE: False
+GPU: 0,1
+LOSS:
+  CLA_LOSS: crossentropy
+  CLA_M: 0.0
+  CLA_S: 16.0
+  PAIR_LOSS: triplet
+  PAIR_M: 0.3
+  PAIR_S: 16.0
+MODEL:
+  FEATURE_DIM: 2048
+  NAME: resnet50
+  RES4_STRIDE: 1
+  RESUME: 
+OUTPUT: logs/market1501/res50-ce-triplet
+SEED: 0
+TAG: res50-ce-triplet
+TEST:
+  DISTANCE: cosine
+  EVAL_STEP: 5
+  START_EVAL: 0
+TRAIN:
+  LR_SCHEDULER:
+    DECAY_RATE: 0.1
+    STEPSIZE: [20, 40]
+  MAX_EPOCH: 60
+  OPTIMIZER:
+    LR: 0.00035
+    NAME: adam
+    WEIGHT_DECAY: 0.0005
+  START_EPOCH: 0
+==========
+Currently using GPU 0,1
+Initializing dataset market1501
