@@ -1,11 +1,11 @@
+import argparse
+import datetime
 import os
+import os.path as osp
 import sys
 import time
-import datetime
-import argparse
-import os.path as osp
-import numpy as np
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,8 +14,8 @@ from torch.optim import lr_scheduler
 
 from configs.default import get_config
 from data import build_dataloader
-from models import build_model
 from losses import build_losses
+from models import build_model
 from tools.eval_metrics import evaluate
 from tools.utils import AverageMeter, Logger, save_checkpoint, set_seed
 

@@ -1,9 +1,9 @@
-import data.transforms as T
 from torch.utils.data import DataLoader
-from data.datasets import Market1501, CUHK03, DukeMTMCreID, MSMT17
-from data.dataset_loader import ImageDataset
-from data.samplers import RandomIdentitySampler
 
+import data.transforms as T
+from data.dataset_loader import ImageDataset
+from data.datasets import Market1501, CUHK03, DukeMTMCreID, MSMT17
+from data.samplers import RandomIdentitySampler
 
 __factory = {
     'market1501': Market1501,

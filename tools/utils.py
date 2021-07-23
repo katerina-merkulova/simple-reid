@@ -1,12 +1,13 @@
-import os
-import sys
-import shutil
 import errno
 import json
+import os
 import os.path as osp
-import torch
 import random
+import shutil
+import sys
+
 import numpy as np
+import torch
 
 
 def set_seed(seed=None):

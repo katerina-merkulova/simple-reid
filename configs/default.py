@@ -1,7 +1,6 @@
 import os
-import yaml
-from yacs.config import CfgNode as CN
 
+from yacs.config import CfgNode as CN
 
 _C = CN()
 # -----------------------------------------------------------------------------

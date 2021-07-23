@@ -1,12 +1,11 @@
-import torch
 from torch import nn
 
+from losses.arcface_loss import ArcFaceLoss
+from losses.circle_loss import CircleLoss, PairwiseCircleLoss
+from losses.contrastive_loss import ContrastiveLoss
+from losses.cosface_loss import CosFaceLoss, PairwiseCosFaceLoss
 from losses.cross_entropy_label_smooth import CrossEntropyLabelSmooth
 from losses.triplet_loss import TripletLoss
-from losses.contrastive_loss import ContrastiveLoss
-from losses.arcface_loss import ArcFaceLoss
-from losses.cosface_loss import CosFaceLoss, PairwiseCosFaceLoss
-from losses.circle_loss import CircleLoss, PairwiseCircleLoss
 
 
 def build_losses(config):

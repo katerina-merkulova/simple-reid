@@ -1,7 +1,7 @@
-from torchvision.transforms import *
-from PIL import Image
-import random
 import math
+import random
+
+from PIL import Image
 
 
 class RandomCroping(object):

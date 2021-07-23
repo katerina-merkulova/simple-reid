@@ -1,7 +1,8 @@
 import copy
 import random
-import numpy as np
 from collections import defaultdict
+
+import numpy as np
 from torch.utils.data.sampler import Sampler
 
 

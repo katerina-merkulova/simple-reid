@@ -1,10 +1,10 @@
-import os
-import re
 import glob
-import h5py
-import numpy as np
 import os.path as osp
+import re
+
+import h5py
 from scipy.io import loadmat
+
 from tools.utils import mkdir_if_missing, write_json, read_json
 
 
