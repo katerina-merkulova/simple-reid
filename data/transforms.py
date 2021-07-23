@@ -2,6 +2,7 @@ import math
 import random
 
 from PIL import Image
+from torchvision.transforms import Compose, RandomHorizontalFlip, ToTensor, Normalize, Resize
 
 
 class RandomCroping(object):

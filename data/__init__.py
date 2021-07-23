@@ -2,15 +2,10 @@ from torch.utils.data import DataLoader
 
 import data.transforms as T
 from data.dataset_loader import ImageDataset
-from data.datasets import Market1501, CUHK03, DukeMTMCreID, MSMT17
+from data.datasets import Market1501
 from data.samplers import RandomIdentitySampler
 
-__factory = {
-    'market1501': Market1501,
-    'cuhk03': CUHK03,
-    'dukemtmcreid': DukeMTMCreID,
-    'msmt17': MSMT17,
-}
+__factory = {'market1501': Market1501}
 
 
 def get_names():

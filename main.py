@@ -25,7 +25,7 @@ def parse_option():
     parser.add_argument('--cfg', type=str, required=True, metavar="FILE", help='path to config file')
     # Datasets
     parser.add_argument('--root', type=str, help="your root path to data directory")
-    parser.add_argument('--dataset', type=str, help="market1501, cuhk03, dukemtmcreid, msmt17")
+    parser.add_argument('--dataset', type=str, help="market1501")
     # Miscs
     parser.add_argument('--output', type=str, help="your output path to save model and logs")
     parser.add_argument('--resume', type=str, metavar='PATH')
