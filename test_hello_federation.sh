@@ -3,7 +3,7 @@ source venv/bin/activate
 set -e
 # Test the pipeline
 
-TEMPLATE=${1:-'torch_cnn_mnist'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
+# TEMPLATE=${1:-'torch_cnn_mnist'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
 FED_WORKSPACE=${2:-'federated'}   # This can be whatever unique directory name you want
 COL1=${3:-'one'}  # This can be any unique label (lowercase)
 COL2=${4:-'two'} # This can be any unique label (lowercase)
@@ -105,10 +105,13 @@ fx aggregator certify --fqdn "${FQDN}" --silent # Remove '--silent' if you run t
 # Create collaborator #1
 COL1_DIRECTORY="${FED_DIRECTORY}/${COL1}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL1}" "${COL1_DIRECTORY}" " ${COL1_DATA_PATH}"
+sudo cp -r "${FED_DIRECTORY}/data" "${COL1_DIRECTORY}/${FED_WORKSPACE}"
+
 
 # Create collaborator #2
 COL2_DIRECTORY="${FED_DIRECTORY}/${COL2}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL2}" "${COL2_DIRECTORY}" "${COL2_DATA_PATH}"
+sudo cp -r "${FED_DIRECTORY}/data" "${COL2_DIRECTORY}/${FED_WORKSPACE}"
 
 # # Run the federation
 cd "${FED_DIRECTORY}"
@@ -118,5 +121,5 @@ cd "${COL1_DIRECTORY}/${FED_WORKSPACE}"
 fx collaborator start -n "${COL1}" &
 cd "${COL2_DIRECTORY}/${FED_WORKSPACE}"
 fx collaborator start -n "${COL2}"
-wait
+# wait
 # rm -rf "${FED_DIRECTORY}"
