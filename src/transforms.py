@@ -1,3 +1,6 @@
+# Copyright (C) 2020-2021 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 import math
 import random
 
@@ -8,7 +11,6 @@ from torchvision.transforms import Compose, RandomHorizontalFlip, ToTensor, Norm
 class RandomCroping(object):
     """
     With a probability, first increase image size to (1 + 1/8), and then perform random crop.
-
     Args:
         height (int): target height.
         width (int): target width.
@@ -25,7 +27,6 @@ class RandomCroping(object):
         """
         Args:
             img (PIL Image): Image to be cropped.
-
         Returns:
             PIL Image: Cropped image.
         """

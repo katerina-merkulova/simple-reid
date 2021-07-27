@@ -18,8 +18,8 @@ class Market1501(object):
     """
     dataset_dir = 'Market'
 
-    def __init__(self, root='data', **kwargs):
-        self.dataset_dir = osp.join(root, self.dataset_dir)
+    def __init__(self, **kwargs):
+        self.dataset_dir = osp.join('data', self.dataset_dir)
         self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')

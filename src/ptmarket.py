@@ -4,10 +4,9 @@
 """You may copy this file as the starting point of your own model."""
 from torch.utils.data import DataLoader
 
-import data.transforms as T
-from data.dataset_loader import ImageDataset
-from data.datasets import Market1501
-from data.samplers import RandomIdentitySampler
+import src.transforms as T
+from .tools import ImageDataset, RandomIdentitySampler
+from .datasets import Market1501
 
 from openfl.federated import PyTorchDataLoader
 
@@ -55,7 +54,7 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             tuple: shape of an example feature array
         """
-        raise NotImplementedError
+        return self.dataset.num_train_pids
 
     def get_train_loader(self):
         """

@@ -35,7 +35,7 @@ data_loader:
     batch_size: 256
     collaborator_count: 2
     data_group_name: market
-  template: code.ptmarket.PyTorchMarket
+  template: src.ptmarket.PyTorchMarket
 network:
   defaults: plan/defaults/network.yaml
   settings:
@@ -50,7 +50,7 @@ network:
 task_runner:
   defaults: plan/defaults/task_runner.yaml
   settings: {}
-  template: code.models.ResNet50
+  template: src.models.ResNet50
 tasks:
   aggregated_model_validation:
     function: validate

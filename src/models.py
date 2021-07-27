@@ -11,11 +11,11 @@ import torchvision
 import tqdm
 from torch.nn import init, Parameter
 
-from openfl.federated import PyTorchTaskRunner, split_tensor_dict_for_holdouts
-from openfl.utilities import TensorKey, Metric
+from openfl.federated import PyTorchTaskRunner
+from openfl.utilities import TensorKey, Metric, split_tensor_dict_for_holdouts
 
-from losses import ArcFaceLoss, TripletLoss
-from tools import AverageMeter, evaluate, fliplr
+from .losses import ArcFaceLoss, TripletLoss
+from .tools import AverageMeter, evaluate, fliplr
 
 
 class ResNet50(PyTorchTaskRunner):
@@ -32,7 +32,7 @@ class ResNet50(PyTorchTaskRunner):
         """
         super().__init__(device=device, **kwargs)
 
-        self.num_classes = self.data_loader.num_classes
+        self.num_classes = self.data_loader.get_feature_shape()
         self.init_network(device=self.device, **kwargs)
         self.classifier = NormalizedClassifier(self.num_classes)
 
@@ -297,10 +297,10 @@ class ResNet50(PyTorchTaskRunner):
         return output_tensor_dict, {}
 
 
-class NormalizedClassifier(PyTorchTaskRunner):
+class NormalizedClassifier(nn.Module):
     """Simple CNN for classification."""
 
-    def __init__(self, num_classes, device='cpu', **kwargs):
+    def __init__(self, num_classes):
         """Initialize.
 
         Args:
@@ -309,11 +309,10 @@ class NormalizedClassifier(PyTorchTaskRunner):
             **kwargs: Additional arguments to pass to the function
 
         """
-        super().__init__(device=device, **kwargs)
+        super().__init__()
 
-        self.num_classes = num_classes
-        self.init_network(device=self.device, **kwargs)
-        self.initialize_tensorkeys_for_functions()
+        self.weight = Parameter(torch.Tensor(num_classes, 2048))
+        self.weight.data.uniform_(-1, 1).renorm_(2,0,1e-5).mul_(1e5)
 
     def forward(self, x):
         """Forward pass of the model.
@@ -327,29 +326,3 @@ class NormalizedClassifier(PyTorchTaskRunner):
         w = F.normalize(w, p=2, dim=1)
 
         return F.linear(x, w)
-
-    def init_network(self,
-                     device,
-                     print_model=True,
-                     **kwargs):
-        """Create the network (model).
-
-        Args:
-            device: The hardware device to use for training
-            print_model (bool): Print the model topology (Default=True)
-            **kwargs: Additional arguments to pass to the function
-
-        """
-        self.weight = Parameter(torch.Tensor(self.num_classes, 2048))
-        self.weight.data.uniform_(-1, 1).renorm_(2, 0, 1e-5).mul_(1e5)
-        if print_model:
-            print(self)
-        self.to(device)
-
-    def reset_opt_vars(self):
-        """Reset optimizer variables.
-
-        Resets the optimizer state variables.
-
-        """
-        self.optimizer = optim.Adam(self.parameters(), lr=1e-4)
