@@ -4,7 +4,7 @@ from torch import nn
 from torch.nn import Parameter
 from torch.nn import functional as F
 from torch.nn import init
-s
+
 
 class ResNet50(nn.Module):
     def __init__(self, res4_stride=1, **kwargs):

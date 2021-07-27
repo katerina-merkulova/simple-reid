@@ -12,7 +12,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim import lr_scheduler
 
-from configs.default import get_config
 from data import build_dataloader
 from losses import ArcFaceLoss, TripletLoss
 from models import ResNet50, NormalizedClassifier
@@ -20,27 +19,8 @@ from tools.eval_metrics import evaluate
 from tools.utils import AverageMeter, Logger, save_checkpoint, set_seed
 
 
-def parse_option():
-    parser = argparse.ArgumentParser(description='Train image-based re-id model')
-    parser.add_argument('--cfg', type=str, required=True, metavar="FILE", help='path to config file')
-    # Datasets
-    parser.add_argument('--root', type=str, help="your root path to data directory")
-    parser.add_argument('--dataset', type=str, help="market1501")
-    # Miscs
-    parser.add_argument('--output', type=str, help="your output path to save model and logs")
-    parser.add_argument('--resume', type=str, metavar='PATH')
-    parser.add_argument('--eval', action='store_true', help="evaluation only")
-    parser.add_argument('--tag', type=str, help='tag for log file')
-    # parser.add_argument('--gpu', default='0', type=str, help='gpu device ids for CUDA_VISIBLE_DEVICES')
-
-    args, unparsed = parser.parse_known_args()
-    config = get_config(args)
-
-    return config
-
-
-def main(config):
-    # os.environ['CUDA_VISIBLE_DEVICES'] = config.GPU
+def main():
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
     sys.stdout = Logger(osp.join('logs/', 'log_train.txt'))
 
@@ -48,7 +28,7 @@ def main(config):
     set_seed(0)
 
     # Build dataloader
-    trainloader, queryloader, galleryloader, num_classes = build_dataloader(config)
+    trainloader, queryloader, galleryloader, num_classes = build_dataloader()
     # Build model
     model = ResNet50()
     classifier = NormalizedClassifier(num_classes)
@@ -63,8 +43,8 @@ def main(config):
 
     start_epoch = 0
 
-    model = nn.DataParallel(model)
-    classifier = nn.DataParallel(classifier)
+#     model = nn.DataParallel(model)
+#     classifier = nn.DataParallel(classifier)
 
     start_time = time.time()
     train_time = 0
@@ -203,5 +183,4 @@ def test(model, queryloader, galleryloader):
 
 
 if __name__ == '__main__':
-    config = parse_option()
-    main(config)
+    main()
