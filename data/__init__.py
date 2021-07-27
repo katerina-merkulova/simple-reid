@@ -5,57 +5,35 @@ from data.dataset_loader import ImageDataset
 from data.datasets import Market1501
 from data.samplers import RandomIdentitySampler
 
-__factory = {'market1501': Market1501}
 
+def build_dataloader():
+    dataset = Market1501(root='data', split_id=0,
+                         cuhk03_labeled=False,
+                         cuhk03_classic_split=False)
 
-def get_names():
-    return list(__factory.keys())
-
-
-def build_dataset(config):
-    if config.DATA.DATASET not in __factory.keys():
-        raise KeyError("Invalid dataset, got '{}', but expected to be one of {}".format(name, __factory.keys()))
-
-    print("Initializing dataset {}".format(config.DATA.DATASET))
-    dataset = __factory[config.DATA.DATASET](root=config.DATA.ROOT, split_id=config.DATA.SPLIT_ID,
-                                             cuhk03_labeled=config.DATA.CUHK03_LABELED, 
-                                             cuhk03_classic_split=config.DATA.CUHK03_CLASSIC_SPLIT)
-
-    return dataset
-
-
-def build_transforms(config):
     transform_train = T.Compose([
-        T.RandomCroping(config.DATA.HEIGHT, config.DATA.WIDTH, p=config.AUG.RC_PROB),
+        T.RandomCroping(256, 128, p=0.5),
         T.RandomHorizontalFlip(),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        T.RandomErasing(probability = config.AUG.RE_PROB)
+        T.RandomErasing(probability=0.5)
     ])
-
     transform_test = T.Compose([
-        T.Resize((config.DATA.HEIGHT, config.DATA.WIDTH)),
+        T.Resize((265, 128)),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    return transform_train, transform_test
-
-
-def build_dataloader(config):
-    dataset = build_dataset(config)
-    transform_train, transform_test = build_transforms(config)
-
     trainloader = DataLoader(ImageDataset(dataset.train, transform=transform_train),
-                             sampler=RandomIdentitySampler(dataset.train, num_instances=config.DATA.NUM_INSTANCES),
-                             batch_size=config.DATA.TRAIN_BATCH, num_workers=config.DATA.NUM_WORKERS,
+                             sampler=RandomIdentitySampler(dataset.train, num_instances=4),
+                             batch_size=64, num_workers=4,
                              pin_memory=True, drop_last=True)
     queryloader = DataLoader(ImageDataset(dataset.query, transform=transform_test),
-                             batch_size=config.DATA.TEST_BATCH, num_workers=config.DATA.NUM_WORKERS,
+                             batch_size=512, num_workers=4,
                              pin_memory=True, drop_last=False, shuffle=False)
 
     galleryloader = DataLoader(ImageDataset(dataset.gallery, transform=transform_test),
-                               batch_size=config.DATA.TEST_BATCH, num_workers=config.DATA.NUM_WORKERS,
+                               batch_size=512, num_workers=4,
                                pin_memory=True, drop_last=False, shuffle=False)
 
     return trainloader, queryloader, galleryloader, dataset.num_train_pids

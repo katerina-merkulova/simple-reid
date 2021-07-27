@@ -31,7 +31,7 @@ def parse_option():
     parser.add_argument('--resume', type=str, metavar='PATH')
     parser.add_argument('--eval', action='store_true', help="evaluation only")
     parser.add_argument('--tag', type=str, help='tag for log file')
-    parser.add_argument('--gpu', default='0', type=str, help='gpu device ids for CUDA_VISIBLE_DEVICES')
+    # parser.add_argument('--gpu', default='0', type=str, help='gpu device ids for CUDA_VISIBLE_DEVICES')
 
     args, unparsed = parser.parse_known_args()
     config = get_config(args)
@@ -40,16 +40,12 @@ def parse_option():
 
 
 def main(config):
-    os.environ['CUDA_VISIBLE_DEVICES'] = config.GPU
+    # os.environ['CUDA_VISIBLE_DEVICES'] = config.GPU
 
-    if not config.EVAL_MODE:
-        sys.stdout = Logger(osp.join(config.OUTPUT, 'log_train.txt'))
-    else:
-        sys.stdout = Logger(osp.join(config.OUTPUT, 'log_test.txt'))
-    print("==========\nConfig:{}\n==========".format(config))
-    print("Currently using GPU {}".format(config.GPU))
+    sys.stdout = Logger(osp.join('logs/', 'log_train.txt'))
+
     # Set random seed
-    set_seed(config.SEED)
+    set_seed(0)
 
     # Build dataloader
     trainloader, queryloader, galleryloader, num_classes = build_dataloader(config)
@@ -61,39 +57,27 @@ def main(config):
     criterion_pair = TripletLoss(margin=0.3, distance='cosine')
     # Build optimizer
     parameters = list(model.parameters()) + list(classifier.parameters())
-    optimizer = optim.Adam(parameters, lr=config.TRAIN.OPTIMIZER.LR,
-                           weight_decay=config.TRAIN.OPTIMIZER.WEIGHT_DECAY)
+    optimizer = optim.Adam(parameters, lr=0.00035, weight_decay=5e-4)
     # Build lr_scheduler
-    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=config.TRAIN.LR_SCHEDULER.STEPSIZE, 
-                                         gamma=config.TRAIN.LR_SCHEDULER.DECAY_RATE)
+    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
-    start_epoch = config.TRAIN.START_EPOCH
-    if config.MODEL.RESUME:
-        print("Loading checkpoint from '{}'".format(config.MODEL.RESUME))
-        checkpoint = torch.load(config.MODEL.RESUME)
-        model.load_state_dict(checkpoint['state_dict'])
-        start_epoch = checkpoint['epoch']
+    start_epoch = 0
 
-    model = nn.DataParallel(model).cuda()
-    classifier = nn.DataParallel(classifier).cuda()
-
-    if config.EVAL_MODE:
-        print("Evaluate only")
-        test(model, queryloader, galleryloader)
-        return
+    model = nn.DataParallel(model)
+    classifier = nn.DataParallel(classifier)
 
     start_time = time.time()
     train_time = 0
     best_rank1 = -np.inf
     best_epoch = 0
     print("==> Start training")
-    for epoch in range(start_epoch, config.TRAIN.MAX_EPOCH):
+    for epoch in range(start_epoch, 10):
         start_train_time = time.time()
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         train_time += round(time.time() - start_train_time)        
         
-        if (epoch+1) > config.TEST.START_EVAL and config.TEST.EVAL_STEP > 0 and \
-            (epoch+1) % config.TEST.EVAL_STEP == 0 or (epoch+1) == config.TRAIN.MAX_EPOCH:
+        if (epoch+1) > 0 and 5 > 0 and \
+            (epoch+1) % 5 == 0 or (epoch+1) == 10:
             print("==> Test")
             rank1 = test(model, queryloader, galleryloader)
             is_best = rank1 > best_rank1
@@ -106,10 +90,10 @@ def main(config):
                 'state_dict': state_dict,
                 'rank1': rank1,
                 'epoch': epoch,
-            }, is_best, osp.join(config.OUTPUT, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
+            }, is_best, osp.join('logs/', 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
         scheduler.step()
 
-    print("==> Best Rank-1 {:.1%}, achieved at epoch {}".format(best_rank1, best_epoch))
+    print(f"==> Best Rank-1 {best_rank1:.1}, achieved at epoch {best_epoch}")
 
     elapsed = round(time.time() - start_time)
     elapsed = str(datetime.timedelta(seconds=elapsed))
@@ -129,7 +113,6 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
 
     end = time.time()
     for batch_idx, (imgs, pids, _) in enumerate(trainloader):
-        imgs, pids = imgs.cuda(), pids.cuda()
         # Measure data loading time
         data_time.update(time.time() - end)
         # Zero the parameter gradients
@@ -153,20 +136,18 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
         batch_time.update(time.time() - end)
         end = time.time()
 
-    print('Epoch{0} '
-          'Time:{batch_time.sum:.1f}s '
-          'Data:{data_time.sum:.1f}s '
-          'ClaLoss:{cla_loss.avg:.4f} '
-          'PairLoss:{pair_loss.avg:.4f} '
-          'Acc:{acc.avg:.2%} '.format(
-           epoch+1, batch_time=batch_time, data_time=data_time, 
-           cla_loss=batch_cla_loss, pair_loss=batch_pair_loss, acc=corrects))
+    print(f'Epoch{epoch+1} '
+          f'Time:{batch_time.sum:.1}s '
+          f'Data:{data_time.sum:.1}s '
+          f'ClaLoss:{batch_cla_loss.avg:.4%} '
+          f'PairLoss:{batch_pair_loss.avg:.4%} '
+          f'Acc:{corrects.avg:.2%} ')
 
 
 def fliplr(img):
-    '''flip horizontal'''
-    inv_idx = torch.arange(img.size(3)-1,-1,-1).long()  # N x C x H x W
-    img_flip = img.index_select(3,inv_idx)
+    ''' flip horizontal'''
+    inv_idx = torch.arange(img.size(3)-1, -1, -1).long()  # N x C x H x W
+    img_flip = img.index_select(3, inv_idx)
 
     return img_flip
 
@@ -176,9 +157,8 @@ def extract_feature(model, dataloader):
     features, pids, camids = [], [], []
     for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
         flip_imgs = fliplr(imgs)
-        imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
-        batch_features = model(imgs).data.cpu()
-        batch_features_flip = model(flip_imgs).data.cpu()
+        batch_features = model(imgs).data
+        batch_features_flip = model(flip_imgs).data
         batch_features += batch_features_flip
 
         features.append(batch_features)
@@ -196,33 +176,27 @@ def test(model, queryloader, galleryloader):
     model.eval()
     # Extract features for query set
     qf, q_pids, q_camids = extract_feature(model, queryloader)
-    print("Extracted features for query set, obtained {} matrix".format(qf.shape))
+    print(f"Extracted features for query set, obtained {qf.shape} matrix")
     # Extract features for gallery set
     gf, g_pids, g_camids = extract_feature(model, galleryloader)
-    print("Extracted features for gallery set, obtained {} matrix".format(gf.shape))
+    print(f"Extracted features for gallery set, obtained {gf.shape} matrix")
     time_elapsed = time.time() - since
     print('Extracting features complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     # Compute distance matrix between query and gallery
     m, n = qf.size(0), gf.size(0)
     distmat = torch.zeros((m,n))
-    if config.TEST.DISTANCE == 'euclidean':
-        distmat = torch.pow(qf, 2).sum(dim=1, keepdim=True).expand(m, n) + \
-                  torch.pow(gf, 2).sum(dim=1, keepdim=True).expand(n, m).t()
-        for i in range(m):
-            distmat[i:i+1].addmm_(1, -2, qf[i:i+1], gf.t())
-    else:
-        # Cosine similarity
-        qf = F.normalize(qf, p=2, dim=1)
-        gf = F.normalize(gf, p=2, dim=1)
-        for i in range(m):
-            distmat[i] = - torch.mm(qf[i:i+1], gf.t())
+    # Cosine similarity
+    qf = F.normalize(qf, p=2, dim=1)
+    gf = F.normalize(gf, p=2, dim=1)
+    for i in range(m):
+        distmat[i] = - torch.mm(qf[i:i+1], gf.t())
     distmat = distmat.numpy()
 
     print("Computing CMC and mAP")
     cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids)
 
     print("Results ----------------------------------------")
-    print('top1:{:.1%} top5:{:.1%} top10:{:.1%} mAP:{:.1%}'.format(cmc[0], cmc[4], cmc[9], mAP))
+    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}')
     print("------------------------------------------------")
 
     return cmc[0]

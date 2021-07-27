@@ -12,15 +12,15 @@ import torch
 
 def set_seed(seed=None):
     if seed is None:
-        return
+        return None
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = ("%s" % seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
+    # torch.cuda.manual_seed(seed)
+    # torch.cuda.manual_seed_all(seed)
+    torch.backends.benchmark = False
+    torch.backends.deterministic = True
 
 
 def mkdir_if_missing(directory):

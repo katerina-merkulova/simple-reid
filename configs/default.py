@@ -101,7 +101,7 @@ _C.SEED = 0
 # Perform evaluation only
 _C.EVAL_MODE = False
 # GPU device ids for CUDA_VISIBLE_DEVICES
-_C.GPU = '0'
+# _C.GPU = '0'
 # Path to output folder, overwritten by command line argument
 _C.OUTPUT = 'logs/'
 # Tag of experiment, overwritten by command line argument
