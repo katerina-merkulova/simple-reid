@@ -1,13 +1,4 @@
-import argparse
-import datetime
-import os
-import os.path as osp
-import sys
-import time
-
-import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim import lr_scheduler
@@ -16,17 +7,10 @@ from data import build_dataloader
 from losses import ArcFaceLoss, TripletLoss
 from models import ResNet50, NormalizedClassifier
 from tools.eval_metrics import evaluate
-from tools.utils import AverageMeter, Logger, save_checkpoint, set_seed
+from tools.utils import AverageMeter
 
 
 def main():
-    # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
-    sys.stdout = Logger(osp.join('logs/', 'log_train.txt'))
-
-    # Set random seed
-    set_seed(0)
-
     # Build dataloader
     trainloader, queryloader, galleryloader, num_classes = build_dataloader()
     # Build model
@@ -41,60 +25,23 @@ def main():
     # Build lr_scheduler
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
-    start_epoch = 0
-
-#     model = nn.DataParallel(model)
-#     classifier = nn.DataParallel(classifier)
-
-    start_time = time.time()
-    train_time = 0
-    best_rank1 = -np.inf
-    best_epoch = 0
     print("==> Start training")
-    for epoch in range(start_epoch, 10):
-        start_train_time = time.time()
+    for epoch in range(10):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
-        train_time += round(time.time() - start_train_time)        
-        
-        if (epoch+1) > 0 and 5 > 0 and \
-            (epoch+1) % 5 == 0 or (epoch+1) == 10:
-            print("==> Test")
-            rank1 = test(model, queryloader, galleryloader)
-            is_best = rank1 > best_rank1
-            if is_best:
-                best_rank1 = rank1
-                best_epoch = epoch + 1
-
-            state_dict = model.module.state_dict()
-            save_checkpoint({
-                'state_dict': state_dict,
-                'rank1': rank1,
-                'epoch': epoch,
-            }, is_best, osp.join('logs/', 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
         scheduler.step()
 
-    print(f"==> Best Rank-1 {best_rank1:.1}, achieved at epoch {best_epoch}")
-
-    elapsed = round(time.time() - start_time)
-    elapsed = str(datetime.timedelta(seconds=elapsed))
-    train_time = str(datetime.timedelta(seconds=train_time))
-    print("Finished. Total elapsed time (h:m:s): {}. Training time (h:m:s): {}.".format(elapsed, train_time))
+    test(model, queryloader, galleryloader)
 
 
 def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader):
     batch_cla_loss = AverageMeter()
     batch_pair_loss = AverageMeter()
     corrects = AverageMeter()
-    batch_time = AverageMeter()
-    data_time = AverageMeter()
 
     model.train()
     classifier.train()
 
-    end = time.time()
     for batch_idx, (imgs, pids, _) in enumerate(trainloader):
-        # Measure data loading time
-        data_time.update(time.time() - end)
         # Zero the parameter gradients
         optimizer.zero_grad()
         # Forward
@@ -112,15 +59,11 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
         corrects.update(torch.sum(preds == pids.data).float()/pids.size(0), pids.size(0))
         batch_cla_loss.update(cla_loss.item(), pids.size(0))
         batch_pair_loss.update(pair_loss.item(), pids.size(0))
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
+
 
     print(f'Epoch{epoch+1} '
-          f'Time:{batch_time.sum:.1}s '
-          f'Data:{data_time.sum:.1}s '
-          f'ClaLoss:{batch_cla_loss.avg:.4%} '
-          f'PairLoss:{batch_pair_loss.avg:.4%} '
+          f'ClaLoss:{batch_cla_loss.avg:.4} '
+          f'PairLoss:{batch_pair_loss.avg:.4} '
           f'Acc:{corrects.avg:.2%} ')
 
 
@@ -152,7 +95,6 @@ def extract_feature(model, dataloader):
 
 
 def test(model, queryloader, galleryloader):
-    since = time.time()
     model.eval()
     # Extract features for query set
     qf, q_pids, q_camids = extract_feature(model, queryloader)
@@ -160,8 +102,6 @@ def test(model, queryloader, galleryloader):
     # Extract features for gallery set
     gf, g_pids, g_camids = extract_feature(model, galleryloader)
     print(f"Extracted features for gallery set, obtained {gf.shape} matrix")
-    time_elapsed = time.time() - since
-    print('Extracting features complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     # Compute distance matrix between query and gallery
     m, n = qf.size(0), gf.size(0)
     distmat = torch.zeros((m,n))

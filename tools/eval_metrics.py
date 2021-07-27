@@ -56,7 +56,7 @@ def evaluate(distmat, q_pids, g_pids, q_camids, g_camids):
         AP += ap_tmp
 
     if num_no_gt > 0:
-        print("{} query imgs do not have groundtruth.".format(num_no_gt))
+        print(f'{num_no_gt} query imgs do not have groundtruth.')
 
     CMC = CMC / (num_q - num_no_gt)
     mAP = AP / (num_q - num_no_gt)
