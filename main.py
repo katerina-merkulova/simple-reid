@@ -14,8 +14,8 @@ from torch.optim import lr_scheduler
 
 from configs.default import get_config
 from data import build_dataloader
-from losses import build_losses
-from models import build_model
+from losses import ArcFaceLoss, TripletLoss
+from models import ResNet50, NormalizedClassifier
 from tools.eval_metrics import evaluate
 from tools.utils import AverageMeter, Logger, save_checkpoint, set_seed
 
@@ -54,22 +54,15 @@ def main(config):
     # Build dataloader
     trainloader, queryloader, galleryloader, num_classes = build_dataloader(config)
     # Build model
-    model, classifier = build_model(config, num_classes)
+    model = ResNet50()
+    classifier = NormalizedClassifier(num_classes)
     # Build classification and pairwise loss
-    criterion_cla, criterion_pair = build_losses(config)
+    criterion_cla = ArcFaceLoss(scale=16., margin=0.1)
+    criterion_pair = TripletLoss(margin=0.3, distance='cosine')
     # Build optimizer
     parameters = list(model.parameters()) + list(classifier.parameters())
-    if config.TRAIN.OPTIMIZER.NAME == 'adam':
-        optimizer = optim.Adam(parameters, lr=config.TRAIN.OPTIMIZER.LR, 
-                               weight_decay=config.TRAIN.OPTIMIZER.WEIGHT_DECAY)
-    elif config.TRAIN.OPTIMIZER.NAME == 'adamw':
-        optimizer = optim.AdamW(parameters, lr=config.TRAIN.OPTIMIZER.LR, 
-                               weight_decay=config.TRAIN.OPTIMIZER.WEIGHT_DECAY)
-    elif config.TRAIN.OPTIMIZER.NAME == 'sgd':
-        optimizer = optim.SGD(parameters, lr=config.TRAIN.OPTIMIZER.LR, momentum=0.9, 
-                              weight_decay=config.TRAIN.OPTIMIZER.WEIGHT_DECAY, nesterov=True)
-    else:
-        raise KeyError("Unknown optimizer: {}".format(config.TRAIN.OPTIMIZER.NAME))
+    optimizer = optim.Adam(parameters, lr=config.TRAIN.OPTIMIZER.LR,
+                           weight_decay=config.TRAIN.OPTIMIZER.WEIGHT_DECAY)
     # Build lr_scheduler
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=config.TRAIN.LR_SCHEDULER.STEPSIZE, 
                                          gamma=config.TRAIN.LR_SCHEDULER.DECAY_RATE)
