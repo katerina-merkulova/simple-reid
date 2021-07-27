@@ -62,8 +62,8 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
 
 
     print(f'Epoch{epoch+1} '
-          f'ClaLoss:{batch_cla_loss.avg:.4} '
-          f'PairLoss:{batch_pair_loss.avg:.4} '
+          f'ClaLoss:{batch_cla_loss.avg:.2} '
+          f'PairLoss:{batch_pair_loss.avg:.2} '
           f'Acc:{corrects.avg:.2%} ')
 
 
