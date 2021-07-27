@@ -50,7 +50,7 @@ network:
 task_runner:
   defaults: plan/defaults/task_runner.yaml
   settings: {}
-  template: code.pt_cnn.PyTorchCNN
+  template: code.models.ResNet50
 tasks:
   aggregated_model_validation:
     function: validate
