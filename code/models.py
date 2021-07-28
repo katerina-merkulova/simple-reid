@@ -21,20 +21,21 @@ from .tools import AverageMeter, evaluate, fliplr
 class ResNet50(PyTorchTaskRunner):
     """ResNet50 with arcface loss for Re-Id"""
 
-    def __init__(self, device='gpu', **kwargs):
+    def __init__(self, device='cpu', **kwargs):
         """Initialize.
 
         Args:
             data: The data loader class
-            device: The hardware device to use for training (Default = 'gpu')
+            device: The hardware device to use for training (Default = 'cpu')
             **kwargs: Additional arguments to pass to the function
 
         """
-        super().__init__(device=device, **kwargs)
+        self.device = torch.device('cuda')
+        super().__init__(device=self.device, **kwargs)
 
-        self.num_classes = self.data_loader.get_feature_shape()
+        self.num_classes = self.data_loader.dataset.num_train_pids + self.data_loader.dataset.num_query_pids
         self.init_network(device=self.device, **kwargs)
-        self.classifier = NormalizedClassifier(self.num_classes)
+        self.classifier = NormalizedClassifier(self.num_classes, self.device)
 
         self.criterion_cla = ArcFaceLoss(scale=16., margin=0.1)    # self.loss_fn
         self.criterion_pair = TripletLoss(margin=0.3, distance='cosine')    # self.loss_fn
@@ -49,6 +50,7 @@ class ResNet50(PyTorchTaskRunner):
         features, pids, camids = [], [], []
         for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
             flip_imgs = fliplr(imgs)
+            imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
             batch_features = self(imgs).data
             batch_features_flip = self(flip_imgs).data
             batch_features += batch_features_flip
@@ -68,6 +70,8 @@ class ResNet50(PyTorchTaskRunner):
         Args:
             x: Data input to the model for the forward pass
         """
+        torch.cuda.empty_cache()
+        
         x = self.base(x)
         x = F.avg_pool2d(x, x.size()[2:])
         x = x.view(x.size(0), -1)
@@ -94,8 +98,7 @@ class ResNet50(PyTorchTaskRunner):
         self.bn = nn.BatchNorm1d(2048)
         init.normal_(self.bn.weight.data, 1.0, 0.02)
         init.constant_(self.bn.bias.data, 0.0)
-        if print_model:
-            print(self)
+
         self.to(device)
 
     def reset_opt_vars(self):
@@ -127,6 +130,8 @@ class ResNet50(PyTorchTaskRunner):
         self.to(self.device)
         self.classifier.train()
         self.classifier.to(self.device)
+        
+        
         loader = self.data_loader.get_train_loader()
         if use_tqdm:
             loader = tqdm.tqdm(loader, desc='train epoch')
@@ -209,7 +214,7 @@ class ResNet50(PyTorchTaskRunner):
         corrects = AverageMeter()
 
         for batch_idx, (imgs, pids, _) in enumerate(trainloader):
-            # data, target = torch.tensor(data).to(self.device), torch.tensor(target).to(self.device)
+            imgs, pids = torch.tensor(imgs).to(self.device), torch.tensor(pids).to(self.device)
             # Zero the parameter gradients
             self.optimizer.zero_grad()
             # Forward
@@ -217,7 +222,7 @@ class ResNet50(PyTorchTaskRunner):
             outputs = self.classifier(features)
             _, preds = torch.max(outputs.data, 1)
             # Compute loss
-            cla_loss = self.criterion_cla(outputs, pids)
+            cla_loss = self.criterion_cla(outputs, pids) / 10
             pair_loss = self.criterion_pair(features, pids)
             loss = cla_loss + pair_loss
             # Backward + Optimize
@@ -230,8 +235,8 @@ class ResNet50(PyTorchTaskRunner):
 
         self.scheduler.step()
         return (
-            Metric(name=self.criterion_cla.__name__, value=np.array(batch_cla_loss.avg)),
-            Metric(name=self.criterion_pair.__name__, value=np.array(batch_pair_loss.avg)),
+            Metric(name='ArcFaceLoss', value=np.array(batch_cla_loss.avg)),
+            Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg)),
                 )
 
     def validate(self, col_name, round_num, input_tensor_dict, use_tqdm=False, **kwargs):
@@ -300,14 +305,13 @@ class ResNet50(PyTorchTaskRunner):
 class NormalizedClassifier(nn.Module):
     """Simple CNN for classification."""
 
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, device):
         """Initialize.
 
         Args:
             data: The data loader class
             device: The hardware device to use for training (Default = "cpu")
             **kwargs: Additional arguments to pass to the function
-
         """
         super().__init__()
 

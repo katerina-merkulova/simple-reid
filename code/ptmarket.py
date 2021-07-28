@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """You may copy this file as the starting point of your own model."""
+import torch
 from torch.utils.data import DataLoader
 
 import code.transforms as T
@@ -50,11 +51,12 @@ class PyTorchMarket(PyTorchDataLoader):
         self.batch_size = batch_size
 
     def get_feature_shape(self):
-        """Get the shape of an example feature array.
+        """
+        Get the shape of an example feature array.
         Returns:
             tuple: shape of an example feature array
         """
-        return self.dataset.train[0].shape
+        return torch.Size([3, 64, 128])
 
     def get_train_loader(self):
         """
@@ -94,7 +96,7 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             int: number of training samples
         """
-        raise self.dataset.num_train_pids
+        return self.dataset.num_train_pids
 
     def get_valid_data_size(self):
         """
@@ -102,4 +104,4 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             int: number of validation samples
         """
-        raise self.dataset.num_gallery_pids
+        return self.dataset.num_gallery_pids

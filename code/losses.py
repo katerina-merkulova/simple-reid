@@ -55,6 +55,7 @@ class TripletLoss(nn.Module):
     """
     def __init__(self, margin=0.3, distance='euclidean'):
         super(TripletLoss, self).__init__()
+        
         if distance not in ['euclidean', 'cosine']:
             raise KeyError("Unsupported distance: {}".format(distance))
         self.distance = distance

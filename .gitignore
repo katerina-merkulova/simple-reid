@@ -1,7 +1,9 @@
 venv
 cert
-**/cert
+**/__pycache__
 logs
+one
+two
 .idea
 .ipynb_checkpoins
 .zip
