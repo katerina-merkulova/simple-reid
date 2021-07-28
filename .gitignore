@@ -1,4 +1,7 @@
 venv
+cert
+**/cert
+logs
 .idea
 .ipynb_checkpoins
-logs
+.zip
