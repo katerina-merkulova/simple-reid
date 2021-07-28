@@ -1,7 +1,5 @@
-import glob
-import os
-import os.path as osp
 import re
+from pathlib import Path
 
 
 class Market1501(object):
@@ -19,11 +17,19 @@ class Market1501(object):
     """
     dataset_dir = 'Market'
 
-    def __init__(self, **kwargs):
-        self.dataset_dir = osp.join('data', self.dataset_dir)
-        self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
-        self.query_dir = osp.join(self.dataset_dir, 'query')
-        self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
+    def __init__(self, root, split_data, **kwargs):
+        if split_data:
+            split_start = int(root) - 1
+            split_step = 2
+            root = 'data'
+        else:
+            split_start = 0
+            split_step = 1
+
+        self.dataset_dir = Path(root) / self.dataset_dir
+        self.train_dir = self.dataset_dir / 'bounding_box_train'
+        self.query_dir = self.dataset_dir / 'query'
+        self.gallery_dir = self.dataset_dir / 'bounding_box_test'
 
         self._check_before_run()
 
@@ -47,28 +53,28 @@ class Market1501(object):
             '  ------------------------------'
         )
 
-        self.train = train
-        self.query = query
-        self.gallery = gallery
+        self.train = train[split_start::split_step]
+        self.query = query[split_start::split_step]
+        self.gallery = gallery[split_start::split_step]
 
-        self.num_train_pids = num_train_pids
-        self.num_query_pids = num_query_pids
-        self.num_gallery_pids = num_gallery_pids
+        self.num_train_pids = len(self.train)
+        self.num_query_pids = len(self.query)
+        self.num_gallery_pids = len(self.gallery)
 
     def _check_before_run(self):
         """Check if all files are available before going deeper"""
-        if not osp.exists(self.dataset_dir):
-            print(os.getcwd())
+        if not self.dataset_dir.exists():
             raise RuntimeError(f'{self.dataset_dir} is not available')
-        if not osp.exists(self.train_dir):
+        if not self.train_dir.exists():
             raise RuntimeError(f'{self.train_dir} is not available')
-        if not osp.exists(self.query_dir):
+        if not self.query_dir.exists():
             raise RuntimeError(f'{self.query_dir} is not available')
-        if not osp.exists(self.gallery_dir):
+        if not self.gallery_dir.exists():
             raise RuntimeError(f'{self.gallery_dir} is not available')
 
-    def _process_dir(self, dir_path, relabel=False, label_start=0):
-        img_paths = glob.glob(osp.join(dir_path, '*.jpg'))
+    @staticmethod
+    def _process_dir(dir_path, relabel=False, label_start=0):
+        img_paths = dir_path.glob('*.jpg')
         pattern = re.compile(r'([-\d]+)_c(\d)')
 
         pid_container = set()

@@ -19,6 +19,7 @@ class PyTorchMarket(PyTorchDataLoader):
         """
         Instantiate the data object.
         Args:
+            data_path: absolute path to data on collaborator
             batch_size: Size of batches used for all data loaders
             kwargs: consumes all un-used kwargs
         Returns:
@@ -26,9 +27,12 @@ class PyTorchMarket(PyTorchDataLoader):
         """
         super().__init__(batch_size, **kwargs)
 
-        self.dataset = Market1501(root=data_path, split_id=0,
-                                  cuhk03_labeled=False,
-                                  cuhk03_classic_split=False)
+        if data_path.isdigit():    # split aggregator data by data path (index 1 or 2 data[index-1::2])
+            split_data = True
+        else:    # absolute path
+            split_data = False
+
+        self.dataset = Market1501(root=data_path, split_data=split_data)
 
         self.transform_train = T.Compose([
             T.RandomCroping(256, 128, p=0.5),
@@ -44,17 +48,13 @@ class PyTorchMarket(PyTorchDataLoader):
         ])
 
         self.batch_size = batch_size
-        self.X_train = None
-        self.y_train = None
-        self.X_valid = None
-        self.y_valid = None
 
     def get_feature_shape(self):
         """Get the shape of an example feature array.
         Returns:
             tuple: shape of an example feature array
         """
-        return self.dataset.num_train_pids
+        return self.dataset.train[0].shape
 
     def get_train_loader(self):
         """
@@ -94,7 +94,7 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             int: number of training samples
         """
-        raise NotImplementedError
+        raise self.dataset.num_train_pids
 
     def get_valid_data_size(self):
         """
@@ -102,4 +102,4 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             int: number of validation samples
         """
-        raise NotImplementedError
+        raise self.dataset.num_gallery_pids

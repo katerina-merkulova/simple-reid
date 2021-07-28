@@ -1,17 +1,14 @@
 # Copyright (C) 2020-2021 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-import numpy as np
-import torch
-
-import os.path as osp
-from PIL import Image
-from torch.utils.data import Dataset
-
 import copy
 import random
 from collections import defaultdict
 
+import numpy as np
+import torch
+from PIL import Image
+from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
 
 
@@ -129,7 +126,7 @@ def read_image(img_path):
     """Keep reading image until succeed.
     This can avoid IOError incurred by heavy IO process."""
     got_img = False
-    if not osp.exists(img_path):
+    if not img_path.exists():
         raise IOError(f'{img_path} does not exist')
     while not got_img:
         try:

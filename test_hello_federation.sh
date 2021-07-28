@@ -81,6 +81,9 @@ create_collaborator() {
 cd "${FED_WORKSPACE}"
 FED_DIRECTORY=$(pwd)  # Get the absolute directory path for the workspace
 
+# Kill all processes
+pkill fx
+
 # Initialize FL plan
 fx plan initialize -a "${FQDN}"
 

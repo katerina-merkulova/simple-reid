@@ -19,14 +19,14 @@ from .tools import AverageMeter, evaluate, fliplr
 
 
 class ResNet50(PyTorchTaskRunner):
-    """Simple CNN for classification."""
+    """ResNet50 with arcface loss for Re-Id"""
 
-    def __init__(self, device='cpu', **kwargs):
+    def __init__(self, device='gpu', **kwargs):
         """Initialize.
 
         Args:
             data: The data loader class
-            device: The hardware device to use for training (Default = "cpu")
+            device: The hardware device to use for training (Default = 'gpu')
             **kwargs: Additional arguments to pass to the function
 
         """
