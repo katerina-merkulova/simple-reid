@@ -81,10 +81,12 @@ create_collaborator() {
 # rm -rf "${FED_WORKSPACE}"
 # fx workspace create --prefix "${FED_WORKSPACE}" --template "${TEMPLATE}"
 cd "${FED_WORKSPACE}"
+mkdir -p "save"
+touch "save/torch_arcface_market_best.pbuf" "save/torch_arcface_market_init.pbuf" "save/torch_arcface_market_last.pbuf"
 FED_DIRECTORY=$(pwd)  # Get the absolute directory path for the workspace
 
 # Kill all processes
-pkill fx
+# pkill fx
 
 # Initialize FL plan
 fx plan initialize -a "${FQDN}"

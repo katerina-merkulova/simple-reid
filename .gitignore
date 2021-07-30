@@ -1,9 +1,11 @@
 venv
+save
 cert
-**/__pycache__
+code/__pycache__
 logs
 one
 two
 .idea
 .ipynb_checkpoins
-.zip
+*.zip
+plan/plan_*

@@ -30,17 +30,18 @@ class ResNet50(PyTorchTaskRunner):
             **kwargs: Additional arguments to pass to the function
 
         """
-        self.device = torch.device('cuda')
-        super().__init__(device=self.device, **kwargs)
+        super().__init__(**kwargs)
 
-        self.num_classes = self.data_loader.dataset.num_train_pids + self.data_loader.dataset.num_query_pids
+#         self.num_classes = self.data_loader.dataset.num_train_pids + self.data_loader.dataset.num_query_pids
+        self.num_classes = 1501
+        self.device = torch.device(f'cuda:{self.data_loader.dataset.device}')
         self.init_network(device=self.device, **kwargs)
         self.classifier = NormalizedClassifier(self.num_classes, self.device)
 
         self.criterion_cla = ArcFaceLoss(scale=16., margin=0.1)    # self.loss_fn
         self.criterion_pair = TripletLoss(margin=0.3, distance='cosine')    # self.loss_fn
         self.param = list(self.parameters()) + list(self.classifier.parameters())
-        self.optimizer = optim.Adam(self.param, lr=1e-4)
+        self.optimizer = optim.Adam(self.param, lr=0.00035, weight_decay=5e-4)
         self.scheduler = optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[20, 40], gamma=0.1)
 
         self.initialize_tensorkeys_for_functions()
@@ -50,7 +51,7 @@ class ResNet50(PyTorchTaskRunner):
         features, pids, camids = [], [], []
         for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
             flip_imgs = fliplr(imgs)
-            imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
+            imgs, flip_imgs = imgs.to(self.device), flip_imgs.to(self.device)
             batch_features = self(imgs).data
             batch_features_flip = self(flip_imgs).data
             batch_features += batch_features_flip
@@ -130,8 +131,7 @@ class ResNet50(PyTorchTaskRunner):
         self.to(self.device)
         self.classifier.train()
         self.classifier.to(self.device)
-        
-        
+
         loader = self.data_loader.get_train_loader()
         if use_tqdm:
             loader = tqdm.tqdm(loader, desc='train epoch')
@@ -236,8 +236,8 @@ class ResNet50(PyTorchTaskRunner):
         self.scheduler.step()
         return (
             Metric(name='ArcFaceLoss', value=np.array(batch_cla_loss.avg)),
-            Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg)),
-                )
+            Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg))
+        )
 
     def validate(self, col_name, round_num, input_tensor_dict, use_tqdm=False, **kwargs):
         """Validate.
@@ -292,10 +292,10 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
-            TensorKey('cmc', origin, round_num, True, tags):
-                np.array(cmc),
             TensorKey('mAP', origin, round_num, True, tags):
-                np.array(mAP)
+                np.array(mAP).mean(),
+            TensorKey('cmc', origin, round_num, True, tags):
+                np.array(cmc).mean()
         }
 
         # Empty list represents metrics that should only be stored locally
