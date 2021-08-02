@@ -15,18 +15,17 @@ from openfl.federated import PyTorchDataLoader
 class PyTorchMarket(PyTorchDataLoader):
     """PyTorch data loader for MNIST dataset."""
 
-    def __init__(self, data_path, batch_size, **kwargs):
+    def __init__(self, data_path, **kwargs):
 
         """
         Instantiate the data object.
         Args:
             data_path: absolute path to data on collaborator
-            batch_size: Size of batches used for all data loaders
             kwargs: consumes all un-used kwargs
         Returns:
             None
         """
-        super().__init__(batch_size, **kwargs)
+        super().__init__(batch_size=512, **kwargs)
 
         if data_path.isdigit():    # split aggregator data by data path (index 1 or 2 data[index-1::2])
             split_data = True
@@ -48,8 +47,6 @@ class PyTorchMarket(PyTorchDataLoader):
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
 
-        self.batch_size = batch_size
-
     def get_feature_shape(self):
         """
         Get the shape of an example feature array.
@@ -65,10 +62,11 @@ class PyTorchMarket(PyTorchDataLoader):
         -------
         loader object
         """
-        return DataLoader(ImageDataset(self.dataset.train, transform=self.transform_train),
-                          sampler=RandomIdentitySampler(self.dataset.train, num_instances=4),
-                          batch_size=64, num_workers=4,
-                          pin_memory=True, drop_last=True)
+        return DataLoader(
+            ImageDataset(self.dataset.train, transform=self.transform_train),
+            sampler=RandomIdentitySampler(self.dataset.train, num_instances=4),
+            batch_size=64, num_workers=4, pin_memory=True, drop_last=True
+        )
 
     def get_query_loader(self):
         """
@@ -76,9 +74,10 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             loader object
         """
-        return DataLoader(ImageDataset(self.dataset.train, transform=self.transform_test),
-                          batch_size=512, num_workers=4,
-                          pin_memory=True, drop_last=False, shuffle=False)
+        return DataLoader(
+            ImageDataset(self.dataset.train, transform=self.transform_test),
+            batch_size=512, num_workers=4, pin_memory=True, drop_last=False, shuffle=False
+        )
 
     def get_gallery_loader(self):
         """
@@ -86,9 +85,10 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             loader object
         """
-        return DataLoader(ImageDataset(self.dataset.gallery, transform=self.transform_test),
-                          batch_size=512, num_workers=4,
-                          pin_memory=True, drop_last=False, shuffle=False)
+        return DataLoader(
+            ImageDataset(self.dataset.gallery, transform=self.transform_test),
+            batch_size=512, num_workers=4, pin_memory=True, drop_last=False, shuffle=False
+        )
 
     def get_train_data_size(self):
         """
