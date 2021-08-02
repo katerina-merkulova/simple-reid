@@ -7,5 +7,6 @@ one
 two
 .idea
 .ipynb_checkpoins
+..gitignore.swp
 *.zip
 plan/plan_*

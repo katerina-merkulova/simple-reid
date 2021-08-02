@@ -1,11 +1,7 @@
-#!/bin/bash
-
-source venv/bin/activate
-
 set -e
 # Test the pipeline
 
-# TEMPLATE=${1:-'torch_cnn_mnist'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
+# TEMPLATE=${1:-'torch_arcface_market'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
 FED_WORKSPACE=${2:-'federated'}   # This can be whatever unique directory name you want
 COL1=${3:-'one'}  # This can be any unique label (lowercase)
 COL2=${4:-'two'} # This can be any unique label (lowercase)
@@ -85,9 +81,7 @@ mkdir -p "save"
 touch "save/torch_arcface_market_best.pbuf" "save/torch_arcface_market_init.pbuf" "save/torch_arcface_market_last.pbuf"
 FED_DIRECTORY=$(pwd)  # Get the absolute directory path for the workspace
 
-# Kill all processes
-# pkill fx
-
+pip install -r requirements.txt
 # Initialize FL plan
 fx plan initialize -a "${FQDN}"
 
