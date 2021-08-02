@@ -23,7 +23,7 @@ collaborator:
   settings:
     db_store_rounds: 1
     delta_updates: false
-    opt_treatment: RESET
+    opt_treatment: CONTINUE_GLOBAL
   template: openfl.component.Collaborator
 compression_pipeline:
   defaults: plan/defaults/compression_pipeline.yaml
@@ -56,7 +56,7 @@ tasks:
     kwargs:
       apply: global
       metrics:
-      - cmc
+      - cmc@1
       - mAP
   defaults: plan/defaults/tasks_torch.yaml
   locally_tuned_model_validation:
@@ -64,7 +64,7 @@ tasks:
     kwargs:
       apply: local
       metrics:
-      - cmc
+      - cmc@1
       - mAP
   settings: {}
   train:

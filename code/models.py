@@ -293,10 +293,10 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
-            TensorKey('cmc', origin, round_num, True, tags):
-               cmc[0],
+            TensorKey('cmc@1', origin, round_num, True, tags):
+               cmc[0] * 100,
             TensorKey('mAP', origin, round_num, True, tags):
-                mAP
+                mAP * 100
         }
 
         # Empty list represents metrics that should only be stored locally
