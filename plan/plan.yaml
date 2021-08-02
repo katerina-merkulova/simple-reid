@@ -71,5 +71,6 @@ tasks:
     function: train_batches
     kwargs:
       metrics:
+      - accuracy
       - arcface_loss
       - triplet_loss

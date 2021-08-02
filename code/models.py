@@ -222,7 +222,7 @@ class ResNet50(PyTorchTaskRunner):
             outputs = self.classifier(features)
             _, preds = torch.max(outputs.data, 1)
             # Compute loss
-            cla_loss = self.criterion_cla(outputs, pids) / 10
+            cla_loss = self.criterion_cla(outputs, pids)
             pair_loss = self.criterion_pair(features, pids)
             loss = cla_loss + pair_loss
             # Backward + Optimize
@@ -235,6 +235,7 @@ class ResNet50(PyTorchTaskRunner):
 
         self.scheduler.step()
         return (
+            Metric(name='Accuracy', value=np.array(corrects.avg.cpu())),
             Metric(name='ArcFaceLoss', value=np.array(batch_cla_loss.avg)),
             Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg))
         )
@@ -292,10 +293,10 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
-            TensorKey('mAP', origin, round_num, True, tags):
-                np.array(mAP).mean(),
             TensorKey('cmc', origin, round_num, True, tags):
-                np.array(cmc).mean()
+               cmc[0],
+            TensorKey('mAP', origin, round_num, True, tags):
+                mAP
         }
 
         # Empty list represents metrics that should only be stored locally
