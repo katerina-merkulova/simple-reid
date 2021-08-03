@@ -98,10 +98,10 @@ def test(model, queryloader, galleryloader):
     model.eval()
     # Extract features for query set
     qf, q_pids, q_camids = extract_feature(model, queryloader)
-    print(f"Extracted features for query set, obtained {qf.shape} matrix")
+    print(f'Extracted features for query set, obtained {qf.shape} matrix')
     # Extract features for gallery set
     gf, g_pids, g_camids = extract_feature(model, galleryloader)
-    print(f"Extracted features for gallery set, obtained {gf.shape} matrix")
+    print(f'Extracted features for gallery set, obtained {gf.shape} matrix')
     # Compute distance matrix between query and gallery
     m, n = qf.size(0), gf.size(0)
     distmat = torch.zeros((m,n))
@@ -112,12 +112,12 @@ def test(model, queryloader, galleryloader):
         distmat[i] = - torch.mm(qf[i:i+1], gf.t())
     distmat = distmat.numpy()
 
-    print("Computing CMC and mAP")
+    print('Computing CMC and mAP')
     cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids)
 
-    print("Results ----------------------------------------")
+    print('Results ----------------------------------------')
     print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}')
-    print("------------------------------------------------")
+    print('------------------------------------------------')
 
     return cmc[0]
 
