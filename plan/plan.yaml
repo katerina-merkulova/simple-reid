@@ -1,11 +1,11 @@
 aggregator:
   defaults: plan/defaults/aggregator.yaml
   settings:
-    best_state_path: save/torch_arcface_market_best.pbuf
+    best_state_path: save/torch_cnn_mnist_best.pbuf
     db_store_rounds: 1
-    init_state_path: save/torch_arcface_market_init.pbuf
-    last_state_path: save/torch_arcface_market_last.pbuf
-    rounds_to_train: 3
+    init_state_path: save/torch_cnn_mnist_init.pbuf
+    last_state_path: save/torch_cnn_mnist_last.pbuf
+    rounds_to_train: 10
   template: openfl.component.Aggregator
 assigner:
   defaults: plan/defaults/assigner.yaml
@@ -23,7 +23,7 @@ collaborator:
   settings:
     db_store_rounds: 1
     delta_updates: false
-    opt_treatment: CONTINUE_GLOBAL
+    opt_treatment: RESET
   template: openfl.component.Collaborator
 compression_pipeline:
   defaults: plan/defaults/compression_pipeline.yaml
@@ -32,6 +32,7 @@ compression_pipeline:
 data_loader:
   defaults: plan/defaults/data_loader.yaml
   settings:
+    batch_size: 256
     collaborator_count: 2
     data_group_name: market
   template: code.ptmarket.PyTorchMarket
@@ -56,21 +57,17 @@ tasks:
     kwargs:
       apply: global
       metrics:
-      - cmc@1
-      - mAP
+      - acc
   defaults: plan/defaults/tasks_torch.yaml
   locally_tuned_model_validation:
     function: validate
     kwargs:
       apply: local
       metrics:
-      - cmc@1
-      - mAP
+      - acc
   settings: {}
   train:
     function: train_batches
     kwargs:
       metrics:
-      - accuracy
-      - arcface_loss
-      - triplet_loss
+      - loss

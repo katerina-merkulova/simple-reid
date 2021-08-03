@@ -30,18 +30,17 @@ class ResNet50(PyTorchTaskRunner):
             **kwargs: Additional arguments to pass to the function
 
         """
-        super().__init__(**kwargs)
+        self.device = torch.device('cuda')
+        super().__init__(device=self.device, **kwargs)
 
-#         self.num_classes = self.data_loader.dataset.num_train_pids + self.data_loader.dataset.num_query_pids
-        self.num_classes = 1501
-        self.device = torch.device(f'cuda:{self.data_loader.dataset.device}')
+        self.num_classes = self.data_loader.dataset.num_train_pids + self.data_loader.dataset.num_query_pids
         self.init_network(device=self.device, **kwargs)
         self.classifier = NormalizedClassifier(self.num_classes, self.device)
 
         self.criterion_cla = ArcFaceLoss(scale=16., margin=0.1)    # self.loss_fn
         self.criterion_pair = TripletLoss(margin=0.3, distance='cosine')    # self.loss_fn
         self.param = list(self.parameters()) + list(self.classifier.parameters())
-        self.optimizer = optim.Adam(self.param, lr=0.00035, weight_decay=5e-4)
+        self.optimizer = optim.Adam(self.param, lr=1e-4)
         self.scheduler = optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[20, 40], gamma=0.1)
 
         self.initialize_tensorkeys_for_functions()
@@ -51,7 +50,7 @@ class ResNet50(PyTorchTaskRunner):
         features, pids, camids = [], [], []
         for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
             flip_imgs = fliplr(imgs)
-            imgs, flip_imgs = imgs.to(self.device), flip_imgs.to(self.device)
+            imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
             batch_features = self(imgs).data
             batch_features_flip = self(flip_imgs).data
             batch_features += batch_features_flip
@@ -222,7 +221,7 @@ class ResNet50(PyTorchTaskRunner):
             outputs = self.classifier(features)
             _, preds = torch.max(outputs.data, 1)
             # Compute loss
-            cla_loss = self.criterion_cla(outputs, pids)
+            cla_loss = self.criterion_cla(outputs, pids) / 10
             pair_loss = self.criterion_pair(features, pids)
             loss = cla_loss + pair_loss
             # Backward + Optimize
@@ -235,10 +234,9 @@ class ResNet50(PyTorchTaskRunner):
 
         self.scheduler.step()
         return (
-            Metric(name='Accuracy', value=np.array(corrects.avg.cpu())),
             Metric(name='ArcFaceLoss', value=np.array(batch_cla_loss.avg)),
-            Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg))
-        )
+            Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg)),
+                )
 
     def validate(self, col_name, round_num, input_tensor_dict, use_tqdm=False, **kwargs):
         """Validate.
@@ -293,10 +291,10 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
-            TensorKey('cmc@1', origin, round_num, True, tags):
-               cmc[0] * 100,
+            TensorKey('cmc', origin, round_num, True, tags):
+                np.array(cmc),
             TensorKey('mAP', origin, round_num, True, tags):
-                mAP * 100
+                np.array(mAP)
         }
 
         # Empty list represents metrics that should only be stored locally

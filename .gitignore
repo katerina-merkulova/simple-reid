@@ -1,11 +1,9 @@
-.idea
-.ipynb_checkpoins
-..gitignore.swp
-*.zip
+venv
 cert
-code/__pycache__
+**/__pycache__
 logs
 one
-plan/plan_*
-save
 two
+.idea
+.ipynb_checkpoins
+.zip

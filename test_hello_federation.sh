@@ -1,7 +1,11 @@
+#!/bin/bash
+
+source venv/bin/activate
+
 set -e
 # Test the pipeline
 
-# TEMPLATE=${1:-'torch_arcface_market'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
+# TEMPLATE=${1:-'torch_cnn_mnist'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
 FED_WORKSPACE=${2:-'federated'}   # This can be whatever unique directory name you want
 COL1=${3:-'one'}  # This can be any unique label (lowercase)
 COL2=${4:-'two'} # This can be any unique label (lowercase)
@@ -77,11 +81,11 @@ create_collaborator() {
 # rm -rf "${FED_WORKSPACE}"
 # fx workspace create --prefix "${FED_WORKSPACE}" --template "${TEMPLATE}"
 cd "${FED_WORKSPACE}"
-mkdir -p "save"
-touch "save/torch_arcface_market_best.pbuf" "save/torch_arcface_market_init.pbuf" "save/torch_arcface_market_last.pbuf"
 FED_DIRECTORY=$(pwd)  # Get the absolute directory path for the workspace
 
-pip install -r requirements.txt
+# Kill all processes
+pkill fx
+
 # Initialize FL plan
 fx plan initialize -a "${FQDN}"
 
@@ -122,7 +126,5 @@ cd "${COL1_DIRECTORY}/${FED_WORKSPACE}"
 fx collaborator start -n "${COL1}" &
 cd "${COL2_DIRECTORY}/${FED_WORKSPACE}"
 fx collaborator start -n "${COL2}"
-
-pkill fx
 # wait
 # rm -rf "${FED_DIRECTORY}"
