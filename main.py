@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -11,6 +13,7 @@ from tools.utils import AverageMeter
 
 
 def main():
+    os.environ['CUDA_VISIBLE_DEVICES'] = '2'
     # Build dataloader
     trainloader, queryloader, galleryloader, num_classes = build_dataloader()
     # Build model
@@ -26,7 +29,7 @@ def main():
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
     print("==> Start training")
-    for epoch in range(10):
+    for epoch in range(3):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         scheduler.step()
 
@@ -38,10 +41,13 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
     batch_pair_loss = AverageMeter()
     corrects = AverageMeter()
 
+    model.to('cuda')
     model.train()
+    classifier.to('cuda')
     classifier.train()
 
     for batch_idx, (imgs, pids, _) in enumerate(trainloader):
+        imgs, pids = imgs.cuda(), pids.cuda()
         # Zero the parameter gradients
         optimizer.zero_grad()
         # Forward
@@ -60,10 +66,9 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
         batch_cla_loss.update(cla_loss.item(), pids.size(0))
         batch_pair_loss.update(pair_loss.item(), pids.size(0))
 
-
-    print(f'Epoch{epoch+1} '
-          f'ClaLoss:{batch_cla_loss.avg:.2} '
-          f'PairLoss:{batch_pair_loss.avg:.2} '
+    print(f'Epoch {epoch+1} '
+          f'ClaLoss:{batch_cla_loss.avg:.2f} '
+          f'PairLoss:{batch_pair_loss.avg:.2f} '
           f'Acc:{corrects.avg:.2%} ')
 
 
@@ -80,6 +85,7 @@ def extract_feature(model, dataloader):
     features, pids, camids = [], [], []
     for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
         flip_imgs = fliplr(imgs)
+        imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
         batch_features = model(imgs).data
         batch_features_flip = model(flip_imgs).data
         batch_features += batch_features_flip

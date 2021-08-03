@@ -32,17 +32,19 @@ class Market1501(object):
         num_total_pids = num_train_pids + num_query_pids
         num_total_imgs = num_train_imgs + num_query_imgs + num_gallery_imgs
 
-        print("=> Market1501 loaded")
-        print("Dataset statistics:")
-        print("  ------------------------------")
-        print("  subset   | # ids | # images")
-        print("  ------------------------------")
-        print("  train    | {:5d} | {:8d}".format(num_train_pids, num_train_imgs))
-        print("  query    | {:5d} | {:8d}".format(num_query_pids, num_query_imgs))
-        print("  gallery  | {:5d} | {:8d}".format(num_gallery_pids, num_gallery_imgs))
-        print("  ------------------------------")
-        print("  total    | {:5d} | {:8d}".format(num_total_pids, num_total_imgs))
-        print("  ------------------------------")
+        print(
+            '=> Market1501 loaded\n'
+            'Dataset statistics:\n'
+            '  ------------------------------\n'
+            '  subset   | # ids | # images\n'
+            '  ------------------------------\n'
+            f'  train    | {num_train_pids} | {num_train_imgs}\n'
+            f'  query    | {num_query_pids} | {num_query_imgs}\n'
+            f'  gallery  | {num_gallery_pids} | {num_gallery_imgs}\n'
+            '------------------------------\n'
+            f'total    | {num_total_pids} | {num_total_imgs}\n'
+            '  ------------------------------'
+        )
 
         self.train = train
         self.query = query
@@ -55,13 +57,13 @@ class Market1501(object):
     def _check_before_run(self):
         """Check if all files are available before going deeper"""
         if not osp.exists(self.dataset_dir):
-            raise RuntimeError("'{}' is not available".format(self.dataset_dir))
+            raise RuntimeError(f'{self.dataset_dir} is not available')
         if not osp.exists(self.train_dir):
-            raise RuntimeError("'{}' is not available".format(self.train_dir))
+            raise RuntimeError(f'{self.train_dir} is not available')
         if not osp.exists(self.query_dir):
-            raise RuntimeError("'{}' is not available".format(self.query_dir))
+            raise RuntimeError(f'{self.query_dir} is not available')
         if not osp.exists(self.gallery_dir):
-            raise RuntimeError("'{}' is not available".format(self.gallery_dir))
+            raise RuntimeError(f'{self.gallery_dir} is not available')
 
     def _process_dir(self, dir_path, relabel=False, label_start=0):
         img_paths = glob.glob(osp.join(dir_path, '*.jpg'))
