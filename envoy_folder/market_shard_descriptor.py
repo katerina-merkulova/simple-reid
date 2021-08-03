@@ -1,6 +1,6 @@
 # Copyright (C) 2020-2021 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
-"""Kvasir shard descriptor."""
+"""Market shard descriptor."""
 
 
 import os
@@ -13,17 +13,16 @@ from PIL import Image
 from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
 
 
-class KvasirShardDescriptor(ShardDescriptor):
+class MarketShardDescriptor(ShardDescriptor):
     """Shard descriptor class."""
 
-    def __init__(self, data_folder: str = 'kvasir_data',
+    def __init__(self, data_folder: str = 'Market',
                  rank_worldsize: str = '1,1',
                  enforce_image_hw: str = None) -> None:
-        """Initialize KvasirShardDescriptor."""
+        """Initialize MarketShardDescriptor."""
         super().__init__()
 
         self.data_folder = Path.cwd() / data_folder
-        self.download_data(self.data_folder)
 
         # Settings for resizing data
         self.enforce_image_hw = None
@@ -109,7 +108,7 @@ if __name__ == '__main__':
     rank_worldsize = '1,100'
     enforce_image_hw = '529,622'
 
-    kvasir_sd = KvasirShardDescriptor(
+    kvasir_sd = MarketShardDescriptor(
         data_folder,
         rank_worldsize=rank_worldsize,
         enforce_image_hw=enforce_image_hw)
