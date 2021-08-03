@@ -55,17 +55,17 @@ create_collaborator() {
     cd "${COL_DIRECTORY}"
     fx workspace import --archive "${FED_DIRECTORY}/${ARCHIVE_NAME}" # Import the workspace to this collaborator
 
-    # Create collaborator certificate request
-    cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
-    fx collaborator generate-cert-request -d "${DATA_PATH}" -n "${COL}" --silent # Remove '--silent' if you run this manually
+#     # Create collaborator certificate request
+#     cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
+#     fx collaborator generate-cert-request -d "${DATA_PATH}" -n "${COL}" --silent # Remove '--silent' if you run this manually
 
-    # Sign collaborator certificate 
-    cd "${FED_DIRECTORY}"  # Move back to the Aggregator
-    fx collaborator certify --request-pkg "${COL_DIRECTORY}/${FED_WORKSPACE}/col_${COL}_to_agg_cert_request.zip" --silent # Remove '--silent' if you run this manually
+#     # Sign collaborator certificate 
+#     cd "${FED_DIRECTORY}"  # Move back to the Aggregator
+#     fx collaborator certify --request-pkg "${COL_DIRECTORY}/${FED_WORKSPACE}/col_${COL}_to_agg_cert_request.zip" --silent # Remove '--silent' if you run this manually
 
-    #Import the signed certificate from the aggregator
-    cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
-    fx collaborator certify --import "${FED_DIRECTORY}/agg_to_col_${COL}_signed_cert.zip"
+#     #Import the signed certificate from the aggregator
+#     cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
+#     fx collaborator certify --import "${FED_DIRECTORY}/agg_to_col_${COL}_signed_cert.zip"
 
 }
 
@@ -91,17 +91,17 @@ then
     sed -i "/rounds_to_train/c\    rounds_to_train: $ROUNDS_TO_TRAIN" plan/plan.yaml
 fi
 
-# Create certificate authority for workspace
-fx workspace certify
+# # Create certificate authority for workspace
+# fx workspace certify
 
 # Export FL workspace
 fx workspace export
 
-# Create aggregator certificate
-fx aggregator generate-cert-request --fqdn "${FQDN}"
+# # Create aggregator certificate
+# fx aggregator generate-cert-request --fqdn "${FQDN}"
 
-# Sign aggregator certificate
-fx aggregator certify --fqdn "${FQDN}" --silent # Remove '--silent' if you run this manually
+# # Sign aggregator certificate
+# fx aggregator certify --fqdn "${FQDN}" --silent # Remove '--silent' if you run this manually
 
 # Create collaborator #1
 COL1_DIRECTORY="${FED_DIRECTORY}/${COL1}"
