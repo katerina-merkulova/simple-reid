@@ -75,7 +75,7 @@ class PyTorchMarket(PyTorchDataLoader):
             loader object
         """
         return DataLoader(
-            ImageDataset(self.dataset.train, transform=self.transform_test),
+            ImageDataset(self.dataset.query, transform=self.transform_test),
             batch_size=512, num_workers=4, pin_memory=True, drop_last=False, shuffle=False
         )
 

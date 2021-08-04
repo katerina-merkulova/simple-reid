@@ -1,8 +1,7 @@
-set -e
 # Test the pipeline
 
 # TEMPLATE=${1:-'torch_arcface_market'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
-FED_WORKSPACE=${2:-'federated'}   # This can be whatever unique directory name you want
+FED_WORKSPACE=${2:-'old_openfl'}   # This can be whatever unique directory name you want
 COL1=${3:-'one'}  # This can be any unique label (lowercase)
 COL2=${4:-'two'} # This can be any unique label (lowercase)
 
@@ -106,13 +105,13 @@ fx workspace export
 # Create collaborator #1
 COL1_DIRECTORY="${FED_DIRECTORY}/${COL1}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL1}" "${COL1_DIRECTORY}" " ${COL1_DATA_PATH}"
-sudo cp -r "${FED_DIRECTORY}/data" "${COL1_DIRECTORY}/${FED_WORKSPACE}"
+cp -r "${FED_DIRECTORY}/data" "${COL1_DIRECTORY}/${FED_WORKSPACE}"
 
 
 # Create collaborator #2
 COL2_DIRECTORY="${FED_DIRECTORY}/${COL2}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL2}" "${COL2_DIRECTORY}" "${COL2_DATA_PATH}"
-sudo cp -r "${FED_DIRECTORY}/data" "${COL2_DIRECTORY}/${FED_WORKSPACE}"
+cp -r "${FED_DIRECTORY}/data" "${COL2_DIRECTORY}/${FED_WORKSPACE}"
 
 # # Run the federation
 cd "${FED_DIRECTORY}"
