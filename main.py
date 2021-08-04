@@ -28,7 +28,7 @@ def main():
     # Build lr_scheduler
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
-    print("==> Start training")
+    print('==> Start training')
     for epoch in range(3):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         scheduler.step()
