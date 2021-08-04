@@ -1,5 +1,8 @@
 import re
 from pathlib import Path
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class Market1501(object):
@@ -20,8 +23,7 @@ class Market1501(object):
         split_start = int(root)
         split_step = 2
 
-        dataset_dir = 'Market'
-        self.dataset_dir = Path(dataset_dir)
+        self.dataset_dir = list(Path.cwd().parent.rglob('**/Market'))[0]
         self.train_dir = self.dataset_dir / 'bounding_box_train'
         self.query_dir = self.dataset_dir / 'query'
         self.gallery_dir = self.dataset_dir / 'bounding_box_test'
@@ -41,7 +43,7 @@ class Market1501(object):
         num_total_pids = self.num_train_pids + self.num_query_pids
         num_total_imgs = self.num_train_imgs + self.num_query_imgs + self.num_gallery_imgs
         
-        print(
+        logger.info(
             '=> Market1501 loaded\n'
             'Dataset statistics:\n'
             '  ------------------------------\n'

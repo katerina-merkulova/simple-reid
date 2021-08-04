@@ -4,6 +4,9 @@
 import copy
 import random
 from collections import defaultdict
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 import numpy as np
 import torch
@@ -89,7 +92,7 @@ def evaluate(distmat, q_pids, g_pids, q_camids, g_camids):
         AP += ap_tmp
 
     if num_no_gt > 0:
-        print(f'{num_no_gt} query imgs do not have groundtruth.')
+        logger.info(f'{num_no_gt} query imgs do not have groundtruth.')
 
     CMC = CMC / (num_q - num_no_gt)
     mAP = AP / (num_q - num_no_gt)
@@ -152,7 +155,7 @@ def read_image(img_path):
             img = Image.open(img_path).convert('RGB')
             got_img = True
         except IOError:
-            print(f"IOError incurred when reading '{img_path}'. Will redo. Don't worry. Just chill.")
+            logger.info(f"IOError incurred when reading '{img_path}'. Will redo. Don't worry. Just chill.")
             pass
     return img
 

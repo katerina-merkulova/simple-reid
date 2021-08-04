@@ -19,24 +19,32 @@ class MarketShardDescriptor(ShardDescriptor):
          # Settings for sharding the dataset
         self.rank_worldsize = tuple(int(num) for num in rank_worldsize.split(','))
 
+        pattern = re.compile(r'([-\d]+)_c(\d)')
+        self.dir_path = list(Path.cwd().parent.rglob('**/Market'))[0]
+        train_path = self.dir_path / 'bounding_box_train'
+        self.imgs_path = list(train_path.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
+
+    def __len__(self):        
+        return len(self.imgs_path)
+
     def __getitem__(self, index: int):
         """Return a item by the index."""
-        pattern = re.compile(r'([-\d]+)_c(\d)')
-        dir_path = Path('Market') / 'bounding_box_train'
-        img_path = list(dir_path.glob('*.jpg'))[index]
-
+        img_path = self.imgs_path[index]
         pid, _ = map(int, pattern.search(img_path.name).groups())
-        return img_path, pid
+        
+        img = Image.open(img_path)
+        img = np.asarray(img)
+        return img, pid
 
     @property
     def sample_shape(self):
         """Return the sample shape info."""
-        raise NotImplementedError
+        return ['64', '128', '3']
 
     @property
     def target_shape(self):
         """Return the target shape info."""
-        raise NotImplementedError
+        return ['1501']
 
     @property
     def dataset_description(self) -> str:

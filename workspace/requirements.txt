@@ -1,0 +1,1 @@
+-e git+https://github.com/intel/openfl.git@ce058cbc2f620a9f4e15c14738a778f988bb019f#egg=openfl
