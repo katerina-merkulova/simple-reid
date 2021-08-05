@@ -43,7 +43,7 @@ network:
     cert_folder: cert
     client_reconnect_interval: 5
     disable_client_auth: false
-    disable_tls: false
+    disable_tls: true
     hash_salt: auto
   template: openfl.federation.Network
 task_runner:
