@@ -5,6 +5,9 @@
 from pathlib import Path
 import re
 
+import numpy as np
+from PIL import Image
+
 from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
 
 
@@ -19,7 +22,7 @@ class MarketShardDescriptor(ShardDescriptor):
          # Settings for sharding the dataset
         self.rank_worldsize = tuple(int(num) for num in rank_worldsize.split(','))
 
-        pattern = re.compile(r'([-\d]+)_c(\d)')
+        self.pattern = re.compile(r'([-\d]+)_c(\d)')
         self.dir_path = list(Path.cwd().parent.rglob('**/Market'))[0]
         train_path = self.dir_path / 'bounding_box_train'
         self.imgs_path = list(train_path.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
@@ -30,7 +33,7 @@ class MarketShardDescriptor(ShardDescriptor):
     def __getitem__(self, index: int):
         """Return a item by the index."""
         img_path = self.imgs_path[index]
-        pid, _ = map(int, pattern.search(img_path.name).groups())
+        pid, _ = map(int, self.pattern.search(img_path.name).groups())
         
         img = Image.open(img_path)
         img = np.asarray(img)

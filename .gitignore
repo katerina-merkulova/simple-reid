@@ -1,8 +1,11 @@
 .idea
 .ipynb_checkpoints
-*.pki
+workspace/*.pki
 workspace/__pycache__
 workspace/plan
 workspace/save
+workspace/logs
+workspace/.ipynb_checkpoints
 director_folder/market_test_experiment
 envoy_folder/src
+envoy_folder/__pycache__

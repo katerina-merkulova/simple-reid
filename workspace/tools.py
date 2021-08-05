@@ -4,9 +4,6 @@
 import copy
 import random
 from collections import defaultdict
-from logging import getLogger
-
-logger = getLogger(__name__)
 
 import numpy as np
 import torch
@@ -105,6 +102,7 @@ def extract_feature(model, dataloader):
     features, pids, camids = [], [], []
     for batch_idx, (imgs, batch_pids, batch_camids) in enumerate(dataloader):
         flip_imgs = fliplr(imgs)
+        imgs, flip_imgs = imgs.cuda(), flip_imgs.cuda()
         batch_features = model(imgs).data
         batch_features_flip = model(flip_imgs).data
         batch_features += batch_features_flip
