@@ -1,13 +1,22 @@
-import re
+# Copyright (C) 2020-2021 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+"""Market shard descriptor."""
+
 from pathlib import Path
+import re
 from logging import getLogger
 
 logger = getLogger(__name__)
 
+import numpy as np
+from PIL import Image
 
-class Market1501(object):
+from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
+
+
+class MarketShardDescriptor(ShardDescriptor):
     """
-    Market1501
+    Market1501 Shard descriptor class.
 
     Reference:
     Zheng et al. Scalable Person Re-identification: A Benchmark. ICCV 2015.
@@ -19,10 +28,15 @@ class Market1501(object):
     # images: 12936 (train) + 3368 (query) + 15913 (gallery)
     """
 
-    def __init__(self, root, split_data=True, **kwargs):
-        split_start = int(root)
-        split_step = 2
+    def __init__(self, data_folder: str = 'Market',
+                 rank_worldsize: str = '1,1') -> None:
+        """Initialize MarketShardDescriptor."""
+        super().__init__()
 
+         # Settings for sharding the dataset
+        self.rank_worldsize = tuple(int(num) for num in rank_worldsize.split(','))
+
+        self.pattern = re.compile(r'([-\d]+)_c(\d)')
         self.dataset_dir = list(Path.cwd().parent.rglob('**/Market'))[0]
         self.train_dir = self.dataset_dir / 'bounding_box_train'
         self.query_dir = self.dataset_dir / 'query'
@@ -31,13 +45,13 @@ class Market1501(object):
         self._check_before_run()
 
         self.train, self.num_train_pids, self.num_train_imgs = self._process_dir(
-            self.train_dir, split_start=split_start, split_step=split_step, relabel=True
+            self.train_dir, relabel=True
         )
         self.query, self.num_query_pids, self.num_query_imgs = self._process_dir(
-            self.query_dir, split_start=split_start, split_step=split_step, relabel=False
+            self.query_dir, relabel=False
         )
         self.gallery, self.num_gallery_pids, self.num_gallery_imgs = self._process_dir(
-            self.gallery_dir, split_start=split_start, split_step=split_step, relabel=False
+            self.gallery_dir, relabel=False
         )
 
         num_total_pids = self.num_train_pids + self.num_query_pids
@@ -57,6 +71,35 @@ class Market1501(object):
             '  ------------------------------'
         )
 
+    def __len__(self):        
+        return len(list(self.train_dir.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]])
+
+    def __getitem__(self, index: int):
+        """Return a item by the index."""
+        imgs_path = list(self.train_dir.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
+        img_path = imgs_path[index]
+        pid, _ = map(int, self.pattern.search(img_path.name).groups())
+        
+        img = Image.open(img_path)
+        img = np.asarray(img)
+        return img, pid
+
+    @property
+    def sample_shape(self):
+        """Return the sample shape info."""
+        return ['64', '128', '3']
+
+    @property
+    def target_shape(self):
+        """Return the target shape info."""
+        return ['1501']
+
+    @property
+    def dataset_description(self) -> str:
+        """Return the dataset description."""
+        return f'Market dataset, shard number {self.rank_worldsize[0]}' \
+               f' out of {self.rank_worldsize[1]}'
+
     def _check_before_run(self):
         """Check if all files are available before going deeper"""
         if not self.dataset_dir.exists():
@@ -68,10 +111,9 @@ class Market1501(object):
         if not self.gallery_dir.exists():
             raise RuntimeError(f'{self.gallery_dir} is not available')
 
-    @staticmethod
-    def _process_dir(dir_path, split_start=0, split_step=1, relabel=False, label_start=0):
+    def _process_dir(self, dir_path, relabel=False, label_start=0):
         pattern = re.compile(r'([-\d]+)_c(\d)')
-        img_paths = list(dir_path.glob('*.jpg'))[split_start::split_step]
+        img_paths = list(dir_path.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
 
         pid_container = set()
         for img_path in img_paths:

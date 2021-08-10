@@ -13,7 +13,6 @@ class ArcFaceLoss(nn.Module):
         self.easy_margin = easy_margin
 
     def forward(self, input, target):
-
         # make a one-hot index
         index = input.data * 0.0 #size=(B,Classnum)
         index.scatter_(1,target.data.view(-1,1),1)
