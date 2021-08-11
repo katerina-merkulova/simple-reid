@@ -223,6 +223,7 @@ class ResNet50(PyTorchTaskRunner):
             _, preds = torch.max(outputs.data, 1)
             # Compute loss
             cla_loss = self.criterion_cla(outputs, pids)
+            print(f'{features.shape}')
             pair_loss = self.criterion_pair(features, pids)
             loss = cla_loss + pair_loss
             # Backward + Optimize
