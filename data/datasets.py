@@ -1,6 +1,10 @@
 import glob
 import os.path as osp
 import re
+from pathlib import Path
+
+
+DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]    # parent directory of project
 
 
 class Market1501(object):
@@ -16,10 +20,10 @@ class Market1501(object):
     # identities: 1501 (+1 for background)
     # images: 12936 (train) + 3368 (query) + 15913 (gallery)
     """
-    dataset_dir = 'Market'
+    dataset_dir = self.dataset_dir
 
     def __init__(self, root='data', **kwargs):
-        self.dataset_dir = osp.join(root, self.dataset_dir)
+        self.dataset_dir = Path(DATAPATH)
         self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
