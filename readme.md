@@ -1,4 +1,4 @@
-**trying to run fx (both 1.1 and 1.2) at first time on python3.8:**  
+**trying to run fx (both 1.1 and 1.2) at first time on python3.8 Ubuntu20:**  
 ~~~
 Traceback (most recent call last):
   File "/usr/local/bin/fx", line 8, in <module>
@@ -37,7 +37,7 @@ AttributeError: module 'google.protobuf.descriptor' has no attribute '_internal_
 *solution:* https://stackoverflow.com/questions/61922334/how-to-solve-attributeerror-module-google-protobuf-descriptor-has-no-attribu  
 `pip install --upgrade protobuf`
 
-**install openfl==1.2 on python3.7**:
+**install openfl==1.2 on python3.7 Ubuntu16,20**:
 ~~~
 Traceback (most recent call last):
   File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 584, in _build_master
