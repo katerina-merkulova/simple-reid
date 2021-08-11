@@ -8,4 +8,5 @@ workspace/logs
 workspace/.ipynb_checkpoints
 director_folder/market_test_experiment
 envoy_folder/src
-envoy_folder/__pycache__
+envoy_folder/one/__pycache__
+envoy_folder/two/__pycache__
