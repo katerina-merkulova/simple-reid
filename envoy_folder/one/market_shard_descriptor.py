@@ -14,6 +14,9 @@ from PIL import Image
 from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
 
 
+DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]    # parent directory of project
+
+
 class MarketShardDescriptor(ShardDescriptor):
     """
     Market1501 Shard descriptor class.
@@ -37,7 +40,7 @@ class MarketShardDescriptor(ShardDescriptor):
         self.rank_worldsize = tuple(int(num) for num in rank_worldsize.split(','))
 
         self.pattern = re.compile(r'([-\d]+)_c(\d)')
-        self.dataset_dir = list(Path.cwd().parent.rglob('**/Market'))[0]
+        self.dataset_dir = Path(DATAPATH)
         self.train_dir = self.dataset_dir / 'bounding_box_train'
         self.query_dir = self.dataset_dir / 'query'
         self.gallery_dir = self.dataset_dir / 'bounding_box_test'

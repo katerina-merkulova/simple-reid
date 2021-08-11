@@ -1,2 +1,1 @@
 -e git+https://github.com/intel/openfl.git@007e476bb7415dd42dfc0087c5c7f0b7b29e38c2#egg=openfl
-pkg-resources==0.0.0
