@@ -1,4 +1,4 @@
-**trying to run fx at first time:**  
+**trying to run fx (both 1.1 and 1.2) at first time on python3.8:**  
 ~~~
 Traceback (most recent call last):
   File "/usr/local/bin/fx", line 8, in <module>
@@ -37,5 +37,35 @@ AttributeError: module 'google.protobuf.descriptor' has no attribute '_internal_
 *solution:* https://stackoverflow.com/questions/61922334/how-to-solve-attributeerror-module-google-protobuf-descriptor-has-no-attribu  
 `pip install --upgrade protobuf`
 
-**ERROR TRACEBACK IS NOT FULL - i can't understand where is error at my code**
-`[17:46:46] ERROR    Collaborator failed: list index out of range` is not enough!
+**install openfl==1.2 on python3.7**:
+~~~
+Traceback (most recent call last):
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 584, in _build_master
+    ws.require(__requires__)
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 901, in require
+    needed = self.resolve(parse_requirements(requirements))
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 792, in resolve
+    raise VersionConflict(dist, req).with_context(dependent_req)
+pkg_resources.ContextualVersionConflict: (importlib-metadata 4.6.3 (/home/merkulov/venv_openfl/lib/python3.7/site-packages), Requirement.parse('importlib-metadata<4; python_version < "3.8.0"'), {'ipykernel'})
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/merkulov/venv_openfl/bin/fx", line 6, in <module>
+    from pkg_resources import load_entry_point
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 3261, in <module>
+    @_call_aside
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 3245, in _call_aside
+    f(*args, **kwargs)
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 3274, in _initialize_master_working_set
+    working_set = WorkingSet._build_master()
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 586, in _build_master
+    return cls._build_from_requirements(__requires__)
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 599, in _build_from_requirements
+    dists = ws.resolve(reqs, Environment())
+  File "/home/merkulov/venv_openfl/lib/python3.7/site-packages/pkg_resources/__init__.py", line 787, in resolve
+    raise DistributionNotFound(req, requirers)
+pkg_resources.DistributionNotFound: The 'importlib-metadata<4; python_version < "3.8.0"' distribution was not found and is required by ipykernel
+~~~
+
+*solution:* `pip install 'importlib-metadata<4'`
