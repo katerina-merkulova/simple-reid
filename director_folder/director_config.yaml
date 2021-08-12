@@ -1,4 +1,4 @@
 settings:
-  listen_ip: localhost
+  listen_ip: nnlicv431.inn.intel.com:50051
   sample_shape: ['64', '128', '3']
   target_shape: ['1501']
