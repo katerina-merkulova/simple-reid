@@ -25,6 +25,7 @@ class MarketShardDescriptor(ShardDescriptor):
     Zheng et al. Scalable Person Re-identification: A Benchmark. ICCV 2015.
 
     URL: http://www.liangzheng.org/Project/project_reid.html
+    Download data: https://www.kaggle.com/pengcw1/market-1501
     
     Dataset statistics:
     # identities: 1501 (+1 for background)
