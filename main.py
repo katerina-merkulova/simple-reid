@@ -29,11 +29,10 @@ def main():
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
     print('==> Start training')
-    for epoch in range(3):
+    for epoch in range(10):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         scheduler.step()
-
-    test(model, queryloader, galleryloader)
+        test(model, queryloader, galleryloader)
 
 
 def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader):
@@ -66,10 +65,12 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
         batch_cla_loss.update(cla_loss.item(), pids.size(0))
         batch_pair_loss.update(pair_loss.item(), pids.size(0))
 
+    logs = open('logs.txt', 'a')
     print(f'Epoch {epoch+1} '
           f'ClaLoss:{batch_cla_loss.avg:.2f} '
           f'PairLoss:{batch_pair_loss.avg:.2f} '
-          f'Acc:{corrects.avg:.2%} ')
+          f'Acc:{corrects.avg:.2%} ', file=logs)
+    logs.close()
 
 
 def fliplr(img):
@@ -121,9 +122,11 @@ def test(model, queryloader, galleryloader):
     print('Computing CMC and mAP')
     cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids)
 
-    print('Results ----------------------------------------')
-    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}')
-    print('------------------------------------------------')
+    logs = open('logs.txt', 'a')
+    print('Results ----------------------------------------', file=logs)
+    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}', file=logs)
+    print('------------------------------------------------', file=logs)
+    logs.close()
 
     return cmc[0]
 
