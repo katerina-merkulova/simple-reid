@@ -4,6 +4,10 @@ import data.transforms as T
 from data.dataset_loader import ImageDataset
 from data.datasets import Market1501
 from data.samplers import RandomIdentitySampler
+from tools.utils import set_seed
+
+
+set_seed(0)
 
 
 def build_dataloader():

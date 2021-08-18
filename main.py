@@ -1,7 +1,6 @@
 import datetime
 import os
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -11,12 +10,10 @@ from data import build_dataloader
 from losses import ArcFaceLoss, TripletLoss
 from models import ResNet50, NormalizedClassifier
 from tools.eval_metrics import evaluate
-from tools.utils import AverageMeter
+from tools.utils import AverageMeter, set_seed
 
-np.random.seed(0)
-torch.manual_seed(0)
-torch.backends.cudnn.benchmark = False
-torch.backends.cudnn.deterministic = True
+
+set_seed(0)
 
 
 def main():

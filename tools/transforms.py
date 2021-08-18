@@ -2,15 +2,9 @@ import math
 import random
 
 from PIL import Image
-from torchvision.transforms import Compose, RandomHorizontalFlip, ToTensor, Normalize, Resize
-
-from tools.utils import set_seed
 
 
-set_seed(0)
-
-
-class RandomCroping(object):
+class Random2DTranslation(object):
     """
     With a probability, first increase image size to (1 + 1/8), and then perform random crop.
 
@@ -33,7 +27,7 @@ class RandomCroping(object):
         Returns:
             PIL Image: Cropped image.
         """
-        if random.uniform(0, 1) >= self.p:
+        if random.uniform(0, 1) > self.p:
             return img.resize((self.width, self.height), self.interpolation)
         
         new_width, new_height = int(round(self.width * 1.125)), int(round(self.height * 1.125))
@@ -43,7 +37,6 @@ class RandomCroping(object):
         x1 = int(round(random.uniform(0, x_maxrange)))
         y1 = int(round(random.uniform(0, y_maxrange)))
         croped_img = resized_img.crop((x1, y1, x1 + self.width, y1 + self.height))
-
         return croped_img
 
 
@@ -59,7 +52,7 @@ class RandomErasing(object):
          mean: Erasing value. 
     """
     
-    def __init__(self, probability=0.5, sl=0.02, sh=0.4, r1=0.3, mean=[0.4914, 0.4822, 0.4465]):
+    def __init__(self, probability = 0.5, sl = 0.02, sh = 0.4, r1 = 0.3, mean=[0.4914, 0.4822, 0.4465]):
         self.probability = probability
         self.mean = mean
         self.sl = sl
@@ -68,7 +61,7 @@ class RandomErasing(object):
        
     def __call__(self, img):
 
-        if random.uniform(0, 1) >= self.probability:
+        if random.uniform(0, 1) > self.probability:
             return img
 
         for attempt in range(100):
