@@ -1,5 +1,7 @@
+import datetime
 import os
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -10,6 +12,11 @@ from losses import ArcFaceLoss, TripletLoss
 from models import ResNet50, NormalizedClassifier
 from tools.eval_metrics import evaluate
 from tools.utils import AverageMeter
+
+np.random.seed(0)
+torch.manual_seed(0)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
 
 
 def main():
@@ -28,11 +35,22 @@ def main():
     # Build lr_scheduler
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
-    print('==> Start training')
-    for epoch in range(10):
+    start_time = datetime.datetime.now().time()
+    logs = open('logs.txt', 'a')
+    print(f'==> Start training {start_time}', file=logs)
+    logs.close()
+
+    for epoch in range(3):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         scheduler.step()
-        test(model, queryloader, galleryloader)
+
+    test(model, queryloader, galleryloader)
+
+    end_time = datetime.datetime.now().time()
+    logs = open('logs.txt', 'a')
+    print(f'==> End training {end_time}', file=logs)
+    print(f'Training time: {end_time - start_time}')
+    logs.close()
 
 
 def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader):
@@ -56,17 +74,17 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
         # Compute loss
         cla_loss = criterion_cla(outputs, pids)
         pair_loss = criterion_pair(features, pids)
-        loss = cla_loss + pair_loss     
+        loss = cla_loss + pair_loss
         # Backward + Optimize
         loss.backward()
         optimizer.step()
         # statistics
-        corrects.update(torch.sum(preds == pids.data).float()/pids.size(0), pids.size(0))
+        corrects.update(torch.sum(preds == pids.data).float() / pids.size(0), pids.size(0))
         batch_cla_loss.update(cla_loss.item(), pids.size(0))
         batch_pair_loss.update(pair_loss.item(), pids.size(0))
 
     logs = open('logs.txt', 'a')
-    print(f'Epoch {epoch+1} '
+    print(f'Epoch {epoch + 1} '
           f'ClaLoss:{batch_cla_loss.avg:.2f} '
           f'PairLoss:{batch_pair_loss.avg:.2f} '
           f'Acc:{corrects.avg:.2%} ', file=logs)
@@ -75,7 +93,7 @@ def train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, tr
 
 def fliplr(img):
     ''' flip horizontal'''
-    inv_idx = torch.arange(img.size(3)-1, -1, -1).long()  # N x C x H x W
+    inv_idx = torch.arange(img.size(3) - 1, -1, -1).long()  # N x C x H x W
     img_flip = img.index_select(3, inv_idx)
 
     return img_flip
@@ -111,22 +129,20 @@ def test(model, queryloader, galleryloader):
     print(f'Extracted features for gallery set, obtained {gf.shape} matrix')
     # Compute distance matrix between query and gallery
     m, n = qf.size(0), gf.size(0)
-    distmat = torch.zeros((m,n))
+    distmat = torch.zeros((m, n))
     # Cosine similarity
     qf = F.normalize(qf, p=2, dim=1)
     gf = F.normalize(gf, p=2, dim=1)
     for i in range(m):
-        distmat[i] = - torch.mm(qf[i:i+1], gf.t())
+        distmat[i] = - torch.mm(qf[i:i + 1], gf.t())
     distmat = distmat.numpy()
 
     print('Computing CMC and mAP')
     cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids)
 
-    logs = open('logs.txt', 'a')
-    print('Results ----------------------------------------', file=logs)
-    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}', file=logs)
-    print('------------------------------------------------', file=logs)
-    logs.close()
+    print('Results ----------------------------------------')
+    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}')
+    print('------------------------------------------------')
 
     return cmc[0]
 

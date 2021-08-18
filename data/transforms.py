@@ -2,7 +2,15 @@ import math
 import random
 
 from PIL import Image
+import numpa as np
 from torchvision.transforms import Compose, RandomHorizontalFlip, ToTensor, Normalize, Resize
+
+
+np.random.seed(0)
+random.seed(0)
+torch.manual_seed(0)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
 
 
 class RandomCroping(object):

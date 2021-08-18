@@ -6,6 +6,13 @@ import numpy as np
 from torch.utils.data.sampler import Sampler
 
 
+random.seed(0)
+np.random.seed(0)
+torch.manual_seed(0)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
+
+
 class RandomIdentitySampler(Sampler):
     """
     Randomly sample N identities, then for each identity,

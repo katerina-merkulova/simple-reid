@@ -1,9 +1,16 @@
+import numpy as np
 import torch
 import torchvision
 from torch import nn
 from torch.nn import Parameter
 from torch.nn import functional as F
 from torch.nn import init
+
+
+np.random.seed(0)
+torch.manual_seed(0)
+torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True
 
 
 class ResNet50(nn.Module):

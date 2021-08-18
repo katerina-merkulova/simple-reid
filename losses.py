@@ -6,7 +6,7 @@ from torch import nn
 
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, margin=0.1, scale=16, easy_margin=False):
+    def __init__(self, margin=0.1, scale=16):
         super(ArcFaceLoss, self).__init__()
         self.m = margin
         self.s = scale
@@ -15,7 +15,7 @@ class ArcFaceLoss(nn.Module):
     def forward(self, input, target):
 
         # make a one-hot index
-        index = input.data * 0.0 #size=(B,Classnum)
+        index = input.data * 0.0  # size = (B, Classnum)
         index.scatter_(1,target.data.view(-1,1),1)
         index = index.bool()
 
@@ -31,7 +31,7 @@ class ArcFaceLoss(nn.Module):
 
         cos_t_add_m = torch.where(cond.bool(), cos_t_add_m, keep)
 
-        output = input * 1.0 #size=(B,Classnum)
+        output = input * 1.0  # size = (B, Classnum)
         output[index] = cos_t_add_m
         output = self.s * output
 
@@ -51,7 +51,6 @@ class TripletLoss(nn.Module):
     """
     def __init__(self, margin=0.3, distance='cosine'):
         super(TripletLoss, self).__init__()
-
         self.distance = distance
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=margin)
@@ -82,4 +81,3 @@ class TripletLoss(nn.Module):
         loss = self.ranking_loss(dist_an, dist_ap, y)
 
         return loss
-
