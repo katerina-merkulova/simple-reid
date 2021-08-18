@@ -21,6 +21,7 @@ class Market1501(object):
 
     def __init__(self, root, split_data=True, **kwargs):
         split_start = int(root)
+        self.device = int(root)
         split_step = 2
 
         self.dataset_dir = Path(DATAPATH)

@@ -3,12 +3,9 @@
 
 import math
 import random
+
 from PIL import Image
 from torchvision.transforms import Compose, RandomHorizontalFlip, ToTensor, Normalize, Resize
-
-from tools import set_seed
-
-set_seed(0)
 
 
 class RandomCroping(object):

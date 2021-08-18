@@ -23,7 +23,7 @@ collaborator:
   settings:
     db_store_rounds: 1
     delta_updates: false
-    opt_treatment: RESET
+    opt_treatment: CONTINUE_GLOBAL
   template: openfl.component.Collaborator
 compression_pipeline:
   defaults: plan/defaults/compression_pipeline.yaml
@@ -32,7 +32,6 @@ compression_pipeline:
 data_loader:
   defaults: plan/defaults/data_loader.yaml
   settings:
-    batch_size: 256
     collaborator_count: 2
     data_group_name: market
   template: code.ptmarket.PyTorchMarket
@@ -76,4 +75,6 @@ tasks:
     function: train_batches
     kwargs:
       metrics:
-      - loss
+      - accuracy
+      - arcface_loss
+      - triplet_loss

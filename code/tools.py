@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-import numpy as np
-import os
 import random
+from collections import defaultdict
+
+import numpy as np
 import torch
 from PIL import Image
-from collections import defaultdict
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
 
@@ -190,16 +190,3 @@ class RandomIdentitySampler(Sampler):
 
     def __len__(self):
         return self.length
-
-
-def set_seed(seed=None):
-    if seed is None:
-        return None
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = ("%s" % seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.benchmark = False
-    torch.backends.deterministic = True

@@ -6,14 +6,16 @@ from torch import nn
 
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, margin=0.1, scale=16):
+    def __init__(self, margin=0.1, scale=16, easy_margin=False):
         super(ArcFaceLoss, self).__init__()
         self.m = margin
         self.s = scale
+        self.easy_margin = easy_margin
 
     def forward(self, input, target):
+
         # make a one-hot index
-        index = input.data * 0.0  # size = (B, Classnum)
+        index = input.data * 0.0 #size=(B,Classnum)
         index.scatter_(1,target.data.view(-1,1),1)
         index = index.bool()
 
