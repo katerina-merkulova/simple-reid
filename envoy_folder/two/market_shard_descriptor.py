@@ -2,19 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 """Market shard descriptor."""
 
-from pathlib import Path
 import re
 from logging import getLogger
-
-logger = getLogger(__name__)
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
-
 from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
 
+logger = getLogger(__name__)
 
-DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]    # parent directory of project
+DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]  # parent directory of project
 
 
 class MarketShardDescriptor(ShardDescriptor):
@@ -25,7 +23,8 @@ class MarketShardDescriptor(ShardDescriptor):
     Zheng et al. Scalable Person Re-identification: A Benchmark. ICCV 2015.
 
     URL: http://www.liangzheng.org/Project/project_reid.html
-    
+    Download data: https://www.kaggle.com/pengcw1/market-1501
+
     Dataset statistics:
     # identities: 1501 (+1 for background)
     # images: 12936 (train) + 3368 (query) + 15913 (gallery)
@@ -36,13 +35,14 @@ class MarketShardDescriptor(ShardDescriptor):
         """Initialize MarketShardDescriptor."""
         super().__init__()
 
-         # Settings for sharding the dataset
+        # Settings for sharding the dataset
         self.rank_worldsize = tuple(int(num) for num in rank_worldsize.split(','))
 
         self.pattern = re.compile(r'([-\d]+)_c(\d)')
-        self.train_dir = DATAPATH / 'bounding_box_train'
-        self.query_dir = DATAPATH / 'query'
-        self.gallery_dir = DATAPATH / 'bounding_box_test'
+        self.dataset_dir = Path(DATAPATH)
+        self.train_dir = self.dataset_dir / 'bounding_box_train'
+        self.query_dir = self.dataset_dir / 'query'
+        self.gallery_dir = self.dataset_dir / 'bounding_box_test'
 
         self._check_before_run()
 
@@ -58,7 +58,7 @@ class MarketShardDescriptor(ShardDescriptor):
 
         num_total_pids = self.num_train_pids + self.num_query_pids
         num_total_imgs = self.num_train_imgs + self.num_query_imgs + self.num_gallery_imgs
-        
+
         logger.info(
             '=> Market1501 loaded\n'
             'Dataset statistics:\n'
@@ -73,15 +73,17 @@ class MarketShardDescriptor(ShardDescriptor):
             '  ------------------------------'
         )
 
-    def __len__(self):        
-        return len(list(self.train_dir.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]])
+    def __len__(self):
+        return len(
+            list(self.train_dir.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]])
 
     def __getitem__(self, index: int):
         """Return a item by the index."""
-        imgs_path = list(self.train_dir.glob('*.jpg'))[self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
+        imgs_path = list(self.train_dir.glob('*.jpg'))[
+                    self.rank_worldsize[0] - 1::self.rank_worldsize[1]]
         img_path = imgs_path[index]
         pid, _ = map(int, self.pattern.search(img_path.name).groups())
-        
+
         img = Image.open(img_path)
         img = np.asarray(img)
         return img, pid
@@ -104,8 +106,8 @@ class MarketShardDescriptor(ShardDescriptor):
 
     def _check_before_run(self):
         """Check if all files are available before going deeper"""
-        if not DATAPATH.exists():
-            raise RuntimeError(f'{DATAPATH} is not available')
+        if not self.dataset_dir.exists():
+            raise RuntimeError(f'{self.dataset_dir} is not available')
         if not self.train_dir.exists():
             raise RuntimeError(f'{self.train_dir} is not available')
         if not self.query_dir.exists():
@@ -122,7 +124,7 @@ class MarketShardDescriptor(ShardDescriptor):
             pid, _ = map(int, pattern.search(img_path.name).groups())
             if pid == -1: continue  # junk images are just ignored
             pid_container.add(pid)
-        pid2label = {pid:label for label, pid in enumerate(pid_container)}
+        pid2label = {pid: label for label, pid in enumerate(pid_container)}
 
         dataset = []
         for img_path in img_paths:
@@ -131,7 +133,7 @@ class MarketShardDescriptor(ShardDescriptor):
             if label_start == 0:
                 assert 0 <= pid <= 1501  # pid == 0 means background
             assert 1 <= camid <= 6
-            camid -= 1 # index starts from 0
+            camid -= 1  # index starts from 0
             if relabel: pid = pid2label[pid] + label_start
             dataset.append((img_path, pid, camid))
 

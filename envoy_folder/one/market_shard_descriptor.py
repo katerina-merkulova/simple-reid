@@ -2,17 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 """Market shard descriptor."""
 
-from pathlib import Path
 import re
 from logging import getLogger
-
-logger = getLogger(__name__)
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
-
 from openfl.interface.interactive_api.shard_descriptor import ShardDescriptor
 
+logger = getLogger(__name__)
 
 DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]    # parent directory of project
 
