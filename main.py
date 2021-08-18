@@ -32,21 +32,21 @@ def main():
     # Build lr_scheduler
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[20, 40], gamma=0.1)
 
-    start_time = datetime.datetime.now().time()
+    date = datetime.date(1, 1, 1)
+    start_time = datetime.datetime.combine(date, datetime.datetime.now().time())
     logs = open('logs.txt', 'a')
     print(f'==> Start training {start_time}', file=logs)
     logs.close()
 
-    for epoch in range(3):
+    for epoch in range(10):
         train(epoch, model, classifier, criterion_cla, criterion_pair, optimizer, trainloader)
         scheduler.step()
+        test(model, queryloader, galleryloader)
 
-    test(model, queryloader, galleryloader)
-
-    end_time = datetime.datetime.now().time()
+    end_time = datetime.datetime.combine(date, datetime.datetime.now().time())
     logs = open('logs.txt', 'a')
     print(f'==> End training {end_time}', file=logs)
-    print(f'Training time: {end_time - start_time}')
+    print(f'Training time: {end_time - start_time}', file=logs)
     logs.close()
 
 
@@ -137,9 +137,11 @@ def test(model, queryloader, galleryloader):
     print('Computing CMC and mAP')
     cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids)
 
-    print('Results ----------------------------------------')
-    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}')
-    print('------------------------------------------------')
+    logs = open('logs.txt', 'a')
+    print('Results ----------------------------------------', file=logs)
+    print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}', file=logs)
+    print('------------------------------------------------', file=logs)
+    logs.close()
 
     return cmc[0]
 
