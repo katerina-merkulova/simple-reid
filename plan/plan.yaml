@@ -1,17 +1,11 @@
 aggregator:
   defaults: plan/defaults/aggregator.yaml
   settings:
-    best_state_path: save/torch_cnn_mnist_best.pbuf
+    best_state_path: save/torch_arcface_market_best.pbuf
     db_store_rounds: 1
-<<<<<<< HEAD
-    init_state_path: save/torch_cnn_mnist_init.pbuf
-    last_state_path: save/torch_cnn_mnist_last.pbuf
-    rounds_to_train: 10
-=======
     init_state_path: save/torch_arcface_market_init.pbuf
     last_state_path: save/torch_arcface_market_last.pbuf
     rounds_to_train: 20
->>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   template: openfl.component.Aggregator
 assigner:
   defaults: plan/defaults/assigner.yaml
@@ -63,28 +57,20 @@ tasks:
     kwargs:
       apply: global
       metrics:
-<<<<<<< HEAD
-      - acc
-=======
       - top1
       - top5
       - top10
       - mAP
->>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   defaults: plan/defaults/tasks_torch.yaml
   locally_tuned_model_validation:
     function: validate
     kwargs:
       apply: local
       metrics:
-<<<<<<< HEAD
-      - acc
-=======
       - top1
       - top5
       - top10
       - mAP
->>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   settings: {}
   train:
     function: train_batches
