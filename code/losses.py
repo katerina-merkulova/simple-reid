@@ -6,16 +6,14 @@ from torch import nn
 
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, margin=0.1, scale=16, easy_margin=False):
+    def __init__(self, margin=0.1, scale=16):
         super(ArcFaceLoss, self).__init__()
         self.m = margin
         self.s = scale
-        self.easy_margin = easy_margin
 
     def forward(self, input, target):
-
         # make a one-hot index
-        index = input.data * 0.0 #size=(B,Classnum)
+        index = input.data * 0.0  # size = (B, Classnum)
         index.scatter_(1,target.data.view(-1,1),1)
         index = index.bool()
 
@@ -25,13 +23,9 @@ class ArcFaceLoss(nn.Module):
         sin_t = torch.sqrt(1.0 - cos_t * cos_t)
         cos_t_add_m = cos_t * cos_m  - sin_t * sin_m
 
-        if self.easy_margin:
-            cond = F.relu(cos_t)
-            keep = cos_t
-        else:
-            cond_v = cos_t - math.cos(math.pi - self.m)
-            cond = F.relu(cond_v)
-            keep = cos_t - math.sin(math.pi - self.m) * self.m
+        cond_v = cos_t - math.cos(math.pi - self.m)
+        cond = F.relu(cond_v)
+        keep = cos_t - math.sin(math.pi - self.m) * self.m
 
         cos_t_add_m = torch.where(cond.bool(), cos_t_add_m, keep)
 
@@ -53,11 +47,9 @@ class TripletLoss(nn.Module):
     Args:
         margin (float): margin for triplet.
     """
-    def __init__(self, margin=0.3, distance='euclidean'):
+    def __init__(self, margin=0.3, distance='cosine'):
         super(TripletLoss, self).__init__()
-        
-        if distance not in ['euclidean', 'cosine']:
-            raise KeyError("Unsupported distance: {}".format(distance))
+
         self.distance = distance
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=margin)
@@ -71,14 +63,8 @@ class TripletLoss(nn.Module):
         n = inputs.size(0)
 
         # Compute pairwise distance, replace by the official when merged
-        if self.distance == 'euclidean':
-            dist = torch.pow(inputs, 2).sum(dim=1, keepdim=True).expand(n, n)
-            dist = dist + dist.t()
-            dist.addmm_(1, -2, inputs, inputs.t())
-            dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
-        elif self.distance == 'cosine':
-            inputs = F.normalize(inputs, p=2, dim=1)
-            dist = - torch.mm(inputs, inputs.t())
+        inputs = F.normalize(inputs, p=2, dim=1)
+        dist = - torch.mm(inputs, inputs.t())
 
         # For each anchor, find the hardest positive and negative
         mask = targets.expand(n, n).eq(targets.expand(n, n).t())

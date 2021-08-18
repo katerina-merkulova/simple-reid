@@ -3,13 +3,14 @@
 
 """You may copy this file as the starting point of your own model."""
 import torch
+from openfl.federated import PyTorchDataLoader
 from torch.utils.data import DataLoader
 
 import code.transforms as T
-from .tools import ImageDataset, RandomIdentitySampler
 from .datasets import Market1501
+from .tools import ImageDataset, RandomIdentitySampler, set_seed
 
-from openfl.federated import PyTorchDataLoader
+set_seed(0)
 
 
 class PyTorchMarket(PyTorchDataLoader):
@@ -65,10 +66,11 @@ class PyTorchMarket(PyTorchDataLoader):
         -------
         loader object
         """
-        return DataLoader(ImageDataset(self.dataset.train, transform=self.transform_train),
-                          sampler=RandomIdentitySampler(self.dataset.train, num_instances=4),
-                          batch_size=64, num_workers=4,
-                          pin_memory=True, drop_last=True)
+        return DataLoader(
+            ImageDataset(self.dataset.train, transform=self.transform_train),
+            sampler=RandomIdentitySampler(self.dataset.train, num_instances=4),
+            batch_size=64, num_workers=4, pin_memory=True, drop_last=True
+        )
 
     def get_query_loader(self):
         """

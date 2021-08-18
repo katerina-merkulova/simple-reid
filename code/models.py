@@ -9,13 +9,14 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchvision
 import tqdm
-from torch.nn import init, Parameter
-
 from openfl.federated import PyTorchTaskRunner
 from openfl.utilities import TensorKey, Metric, split_tensor_dict_for_holdouts
+from torch.nn import init, Parameter
 
 from .losses import ArcFaceLoss, TripletLoss
-from .tools import AverageMeter, evaluate, fliplr
+from .tools import AverageMeter, evaluate, fliplr, set_seed
+
+set_seed(0)
 
 
 class ResNet50(PyTorchTaskRunner):
@@ -298,17 +299,12 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
-<<<<<<< HEAD
-            TensorKey('cmc', origin, round_num, True, tags):
-                np.array(cmc),
-=======
             TensorKey('top1', origin, round_num, True, tags):
                cmc[0] * 100,
             TensorKey('top5', origin, round_num, True, tags):
                cmc[4] * 100,
             TensorKey('top10', origin, round_num, True, tags):
                cmc[9] * 100,
->>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
             TensorKey('mAP', origin, round_num, True, tags):
                 np.array(mAP)
         }
