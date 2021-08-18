@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/bin/bash
 
 source venv/bin/activate
@@ -7,6 +8,12 @@ set -e
 
 # TEMPLATE=${1:-'torch_cnn_mnist'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
 FED_WORKSPACE=${2:-'federated'}   # This can be whatever unique directory name you want
+=======
+# Test the pipeline
+
+# TEMPLATE=${1:-'torch_arcface_market'}  # ['torch_cnn_mnist', 'keras_cnn_mnist']
+FED_WORKSPACE=${2:-'old_openfl'}   # This can be whatever unique directory name you want
+>>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
 COL1=${3:-'one'}  # This can be any unique label (lowercase)
 COL2=${4:-'two'} # This can be any unique label (lowercase)
 
@@ -59,17 +66,17 @@ create_collaborator() {
     cd "${COL_DIRECTORY}"
     fx workspace import --archive "${FED_DIRECTORY}/${ARCHIVE_NAME}" # Import the workspace to this collaborator
 
-    # Create collaborator certificate request
-    cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
-    fx collaborator generate-cert-request -d "${DATA_PATH}" -n "${COL}" --silent # Remove '--silent' if you run this manually
+#     # Create collaborator certificate request
+#     cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
+#     fx collaborator generate-cert-request -d "${DATA_PATH}" -n "${COL}" --silent # Remove '--silent' if you run this manually
 
-    # Sign collaborator certificate 
-    cd "${FED_DIRECTORY}"  # Move back to the Aggregator
-    fx collaborator certify --request-pkg "${COL_DIRECTORY}/${FED_WORKSPACE}/col_${COL}_to_agg_cert_request.zip" --silent # Remove '--silent' if you run this manually
+#     # Sign collaborator certificate 
+#     cd "${FED_DIRECTORY}"  # Move back to the Aggregator
+#     fx collaborator certify --request-pkg "${COL_DIRECTORY}/${FED_WORKSPACE}/col_${COL}_to_agg_cert_request.zip" --silent # Remove '--silent' if you run this manually
 
-    #Import the signed certificate from the aggregator
-    cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
-    fx collaborator certify --import "${FED_DIRECTORY}/agg_to_col_${COL}_signed_cert.zip"
+#     #Import the signed certificate from the aggregator
+#     cd "${COL_DIRECTORY}/${FED_WORKSPACE}"
+#     fx collaborator certify --import "${FED_DIRECTORY}/agg_to_col_${COL}_signed_cert.zip"
 
 }
 
@@ -95,28 +102,28 @@ then
     sed -i "/rounds_to_train/c\    rounds_to_train: $ROUNDS_TO_TRAIN" plan/plan.yaml
 fi
 
-# Create certificate authority for workspace
-fx workspace certify
+# # Create certificate authority for workspace
+# fx workspace certify
 
 # Export FL workspace
 fx workspace export
 
-# Create aggregator certificate
-fx aggregator generate-cert-request --fqdn "${FQDN}"
+# # Create aggregator certificate
+# fx aggregator generate-cert-request --fqdn "${FQDN}"
 
-# Sign aggregator certificate
-fx aggregator certify --fqdn "${FQDN}" --silent # Remove '--silent' if you run this manually
+# # Sign aggregator certificate
+# fx aggregator certify --fqdn "${FQDN}" --silent # Remove '--silent' if you run this manually
 
 # Create collaborator #1
 COL1_DIRECTORY="${FED_DIRECTORY}/${COL1}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL1}" "${COL1_DIRECTORY}" " ${COL1_DATA_PATH}"
-sudo cp -r "${FED_DIRECTORY}/data" "${COL1_DIRECTORY}/${FED_WORKSPACE}"
+cp -r "${FED_DIRECTORY}/data" "${COL1_DIRECTORY}/${FED_WORKSPACE}"
 
 
 # Create collaborator #2
 COL2_DIRECTORY="${FED_DIRECTORY}/${COL2}"
 create_collaborator "${FED_WORKSPACE}" "${FED_DIRECTORY}" "${COL2}" "${COL2_DIRECTORY}" "${COL2_DATA_PATH}"
-sudo cp -r "${FED_DIRECTORY}/data" "${COL2_DIRECTORY}/${FED_WORKSPACE}"
+cp -r "${FED_DIRECTORY}/data" "${COL2_DIRECTORY}/${FED_WORKSPACE}"
 
 # # Run the federation
 cd "${FED_DIRECTORY}"

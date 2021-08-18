@@ -76,9 +76,10 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             loader object
         """
-        return DataLoader(ImageDataset(self.dataset.train, transform=self.transform_test),
-                          batch_size=512, num_workers=4,
-                          pin_memory=True, drop_last=False, shuffle=False)
+        return DataLoader(
+            ImageDataset(self.dataset.query, transform=self.transform_test),
+            batch_size=512, num_workers=4, pin_memory=True, drop_last=False, shuffle=False
+        )
 
     def get_gallery_loader(self):
         """
@@ -86,9 +87,11 @@ class PyTorchMarket(PyTorchDataLoader):
         Returns:
             loader object
         """
-        return DataLoader(ImageDataset(self.dataset.gallery, transform=self.transform_test),
-                          batch_size=512, num_workers=4,
-                          pin_memory=True, drop_last=False, shuffle=False)
+        return DataLoader(
+			ImageDataset(self.dataset.gallery, transform=self.transform_test),
+            batch_size=512, num_workers=4,
+            pin_memory=True, drop_last=False, shuffle=False
+		)
 
     def get_train_data_size(self):
         """

@@ -221,7 +221,7 @@ class ResNet50(PyTorchTaskRunner):
             outputs = self.classifier(features)
             _, preds = torch.max(outputs.data, 1)
             # Compute loss
-            cla_loss = self.criterion_cla(outputs, pids) / 10
+            cla_loss = self.criterion_cla(outputs, pids)
             pair_loss = self.criterion_pair(features, pids)
             loss = cla_loss + pair_loss
             # Backward + Optimize
@@ -233,6 +233,13 @@ class ResNet50(PyTorchTaskRunner):
             batch_pair_loss.update(pair_loss.item(), pids.size(0))
 
         self.scheduler.step()
+        
+        logs = open('/home/merkulov/federated_project/market_simple_re-id/old_openfl/logs.txt', 'a')
+        print(f'ClaLoss:{batch_cla_loss.avg:.2f} '
+              f'PairLoss:{batch_pair_loss.avg:.2f} '
+              f'Acc:{corrects.avg:.2%} ', file=logs)
+        logs.close()
+        
         return (
             Metric(name='ArcFaceLoss', value=np.array(batch_cla_loss.avg)),
             Metric(name='TripletLoss', value=np.array(batch_pair_loss.avg)),
@@ -291,12 +298,27 @@ class ResNet50(PyTorchTaskRunner):
         # TODO figure out a better way to pass
         #  in metric for this pytorch validate function
         output_tensor_dict = {
+<<<<<<< HEAD
             TensorKey('cmc', origin, round_num, True, tags):
                 np.array(cmc),
+=======
+            TensorKey('top1', origin, round_num, True, tags):
+               cmc[0] * 100,
+            TensorKey('top5', origin, round_num, True, tags):
+               cmc[4] * 100,
+            TensorKey('top10', origin, round_num, True, tags):
+               cmc[9] * 100,
+>>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
             TensorKey('mAP', origin, round_num, True, tags):
                 np.array(mAP)
         }
 
+        logs = open('/home/merkulov/federated_project/market_simple_re-id/old_openfl/logs.txt', 'a')
+        print(f'Results for Epoch {round_num + 1} Collaborator {col_name} {suffix}', file=logs)
+        print(f'top1:{cmc[0]:.1%} top5:{cmc[4]:.1%} top10:{cmc[9]:.1%} mAP:{mAP:.1%}', file=logs)
+        print('------------------------------------------------', file=logs)
+        logs.close()
+        
         # Empty list represents metrics that should only be stored locally
         return output_tensor_dict, {}
 

@@ -2,6 +2,9 @@ import re
 from pathlib import Path
 
 
+DATAPATH = list(Path.cwd().parents[2].rglob('**/Market'))[0]    # parent directory of project
+
+
 class Market1501(object):
     """
     Market1501
@@ -19,10 +22,8 @@ class Market1501(object):
     def __init__(self, root, split_data=True, **kwargs):
         split_start = int(root)
         split_step = 2
-        root = 'data'
 
-        dataset_dir = 'data/Market'
-        self.dataset_dir = Path(dataset_dir)
+        self.dataset_dir = Path(DATAPATH)
         self.train_dir = self.dataset_dir / 'bounding_box_train'
         self.query_dir = self.dataset_dir / 'query'
         self.gallery_dir = self.dataset_dir / 'bounding_box_test'

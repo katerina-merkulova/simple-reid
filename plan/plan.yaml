@@ -3,9 +3,15 @@ aggregator:
   settings:
     best_state_path: save/torch_cnn_mnist_best.pbuf
     db_store_rounds: 1
+<<<<<<< HEAD
     init_state_path: save/torch_cnn_mnist_init.pbuf
     last_state_path: save/torch_cnn_mnist_last.pbuf
     rounds_to_train: 10
+=======
+    init_state_path: save/torch_arcface_market_init.pbuf
+    last_state_path: save/torch_arcface_market_last.pbuf
+    rounds_to_train: 20
+>>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   template: openfl.component.Aggregator
 assigner:
   defaults: plan/defaults/assigner.yaml
@@ -44,7 +50,7 @@ network:
     cert_folder: cert
     client_reconnect_interval: 5
     disable_client_auth: false
-    disable_tls: false
+    disable_tls: true
     hash_salt: auto
   template: openfl.federation.Network
 task_runner:
@@ -57,14 +63,28 @@ tasks:
     kwargs:
       apply: global
       metrics:
+<<<<<<< HEAD
       - acc
+=======
+      - top1
+      - top5
+      - top10
+      - mAP
+>>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   defaults: plan/defaults/tasks_torch.yaml
   locally_tuned_model_validation:
     function: validate
     kwargs:
       apply: local
       metrics:
+<<<<<<< HEAD
       - acc
+=======
+      - top1
+      - top5
+      - top10
+      - mAP
+>>>>>>> aa579e27b1800df544b8ac327386739b7b705abc
   settings: {}
   train:
     function: train_batches
