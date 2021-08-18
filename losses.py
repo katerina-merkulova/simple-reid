@@ -10,7 +10,6 @@ class ArcFaceLoss(nn.Module):
         super(ArcFaceLoss, self).__init__()
         self.m = margin
         self.s = scale
-        self.easy_margin = easy_margin
 
     def forward(self, input, target):
 
