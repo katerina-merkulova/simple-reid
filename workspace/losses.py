@@ -1,3 +1,8 @@
+# Copyright (C) 2020-2021 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+"""Compute ArcFace loss and Triplet loss."""
+
 import math
 
 import torch
@@ -6,20 +11,25 @@ from torch import nn
 
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, margin=0.1, scale=16):
+    """ArcFace loss."""
+
+    def __init__(self, margin=0.1, scale=16, easy_margin=False):
+        """Initialize ArcFace loss."""
         super(ArcFaceLoss, self).__init__()
         self.m = margin
         self.s = scale
+        self.easy_margin = easy_margin
 
-    def forward(self, input, target):
+    def forward(self, pred, target):
+        """Compute forward."""
         # make a one-hot index
-        index = input.data * 0.0  # size = (B, Classnum)
-        index.scatter_(1,target.data.view(-1,1),1)
+        index = pred.data * 0.0  # size = (B, Classnum)
+        index.scatter_(1, target.data.view(-1, 1), 1)
         index = index.bool()
 
         cos_m = math.cos(self.m)
         sin_m = math.sin(self.m)
-        cos_t = input[index]
+        cos_t = pred[index]
         sin_t = torch.sqrt(1.0 - cos_t * cos_t)
         cos_t_add_m = cos_t * cos_m - sin_t * sin_m
 
@@ -29,7 +39,7 @@ class ArcFaceLoss(nn.Module):
 
         cos_t_add_m = torch.where(cond.bool(), cos_t_add_m, keep)
 
-        output = input * 1.0  # size = (B, Classnum)
+        output = pred * 1.0  # size = (B, Classnum)
         output[index] = cos_t_add_m
         output = self.s * output
 
@@ -37,7 +47,8 @@ class ArcFaceLoss(nn.Module):
 
 
 class TripletLoss(nn.Module):
-    """Triplet loss with hard positive/negative mining.
+    """
+    Triplet loss with hard positive/negative mining.
 
     Reference:
     Hermans et al. In Defense of the Triplet Loss for Person Re-Identification. arXiv:1703.07737.
@@ -46,8 +57,11 @@ class TripletLoss(nn.Module):
 
     Args:
         margin (float): margin for triplet.
+        distance (str): distance for triplet.
     """
+
     def __init__(self, margin=0.3, distance='cosine'):
+        """Initialize Triplet loss."""
         super(TripletLoss, self).__init__()
 
         self.distance = distance
@@ -56,6 +70,8 @@ class TripletLoss(nn.Module):
 
     def forward(self, inputs, targets):
         """
+        Compute forward.
+
         Args:
             inputs: feature matrix with shape (batch_size, feat_dim)
             targets: ground truth labels with shape (num_classes)

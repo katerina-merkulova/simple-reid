@@ -1,19 +1,18 @@
 # Copyright (C) 2020-2021 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
+"""Image transform tools."""
+
 import math
 import random
 
 from PIL import Image
 
-from tools import set_seed
 
-set_seed(0)
-
-
-class RandomCroping(object):
+class ResizeRandomCropping(object):
     """
     With a probability, first increase image size to (1 + 1/8), and then perform random crop.
+
     Args:
         height (int): target height.
         width (int): target width.
@@ -21,6 +20,7 @@ class RandomCroping(object):
     """
 
     def __init__(self, height, width, p=0.5, interpolation=Image.BILINEAR):
+        """Initialize cropping."""
         self.height = height
         self.width = width
         self.p = p
@@ -28,6 +28,8 @@ class RandomCroping(object):
 
     def __call__(self, img):
         """
+        Call of cropping.
+
         Args:
             img (PIL Image): Image to be cropped.
         Returns:
@@ -42,15 +44,18 @@ class RandomCroping(object):
         y_maxrange = new_height - self.height
         x1 = int(round(random.uniform(0, x_maxrange)))
         y1 = int(round(random.uniform(0, y_maxrange)))
-        croped_img = resized_img.crop((x1, y1, x1 + self.width, y1 + self.height))
+        cropped_img = resized_img.crop((x1, y1, x1 + self.width, y1 + self.height))
 
-        return croped_img
+        return cropped_img
 
 
 class RandomErasing(object):
-    """ Randomly selects a rectangle region in an image and erases its pixels.
-        'Random Erasing Data Augmentation' by Zhong et al.
-        See https://arxiv.org/pdf/1708.04896.pdf
+    """
+    Randomly selects a rectangle region in an image and erases its pixels.
+
+    'Random Erasing Data Augmentation' by Zhong et al.
+    See https://arxiv.org/pdf/1708.04896.pdf
+
     Args:
          probability: The probability that the Random Erasing operation will be performed.
          sl: Minimum proportion of erased area against input image.
@@ -59,7 +64,11 @@ class RandomErasing(object):
          mean: Erasing value.
     """
 
-    def __init__(self, probability=0.5, sl=0.02, sh=0.4, r1=0.3, mean=[0.4914, 0.4822, 0.4465]):
+    def __init__(self, probability=0.5, sl=0.02, sh=0.4, r1=0.3, mean=None):
+        """Initialize Erasing."""
+        if not mean:
+            mean = [0.4914, 0.4822, 0.4465]
+
         self.probability = probability
         self.mean = mean
         self.sl = sl
@@ -67,11 +76,11 @@ class RandomErasing(object):
         self.r1 = r1
 
     def __call__(self, img):
-
+        """Call of Erasing."""
         if random.uniform(0, 1) >= self.probability:
             return img
 
-        for attempt in range(100):
+        for _attempt in range(100):
             area = img.size()[1] * img.size()[2]
 
             target_area = random.uniform(self.sl, self.sh) * area
