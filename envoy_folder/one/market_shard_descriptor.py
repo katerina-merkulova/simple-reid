@@ -72,18 +72,18 @@ class MarketShardDescriptor(ShardDescriptor):
             '  ------------------------------'
         )
 
-    # def __len__(self):
-    #     """Length of shard."""
-    #     return len(self.imgs_path)
-    #
-    # def __getitem__(self, index: int):
-    #     """Return a item by the index."""
-    #     img_path = self.imgs_path[index]
-    #     pid, camid = map(int, self.pattern.search(img_path.name).groups())
-    #
-    #     img = Image.open(img_path)
-    #     img = np.asarray(img)
-    #     return img, pid, camid
+    def __len__(self):
+        """Length of shard."""
+        return len(self.imgs_path)
+
+    def __getitem__(self, index: int):
+        """Return a item by the index."""
+        img_path = self.imgs_path[index]
+        pid, camid = map(int, self.pattern.search(img_path.name).groups())
+
+        img = Image.open(img_path)
+        img = np.asarray(img)
+        return img, pid, camid
 
     @property
     def sample_shape(self):
@@ -109,8 +109,8 @@ class MarketShardDescriptor(ShardDescriptor):
             raise RuntimeError(f'{self.train_dir} is not available')
         if not self.query_dir.exists():
             raise RuntimeError(f'{self.query_dir} is not available')
-        if not self.gallery_dir.exists():
-            raise RuntimeError(f'{self.gallery_dir} is not available')
+        if not self.gal_dir.exists():
+            raise RuntimeError(f'{self.gal_dir} is not available')
 
     def _process_dir(self, dir_path, label_start=0):
         """Get data from directory."""

@@ -3,7 +3,6 @@
 workspace/__pycache__
 workspace/plan
 workspace/save
-workspace/logs
 workspace/.ipynb_checkpoints
 workspace/loader_obj.pkl
 workspace/model_obj.pkl
