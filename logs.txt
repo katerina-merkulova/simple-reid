@@ -1,3 +1,0 @@
-==> Start training 22:54:33
-==> End training 23:40:42
-Training time: 0:46:08

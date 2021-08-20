@@ -8,6 +8,10 @@ import random
 
 from PIL import Image
 
+from tools import set_seed
+
+set_seed(0)
+
 
 class ResizeRandomCropping(object):
     """

@@ -5,6 +5,7 @@
 
 import copy
 import random
+import os
 from collections import defaultdict
 from logging import getLogger
 
@@ -227,3 +228,16 @@ class RandomIdentitySampler(Sampler):
     def __len__(self):
         """Return number of examples in an epoch."""
         return self.length
+
+
+def set_seed(seed=None):
+    if seed is None:
+        return None
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = ("%s" % seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.benchmark = False
+    torch.backends.deterministic = True
