@@ -51,26 +51,23 @@ class MarketShardDescriptor(ShardDescriptor):
 
         self._check_before_run()
 
-        self.train, self.num_train_pids, self.num_train_imgs = self._process_dir(self.train_dir)
-        self.query, self.num_query_pids, self.num_query_imgs = self._process_dir(self.query_dir)
-        self.gallery, self.num_gallery_pids, self.num_gallery_imgs = self._process_dir(self.gal_dir)
+        self.train_path = list(self.train_dir.glob('*.jpg'))[self.rank - 1::self.worldsize]
+        self.query_path = list(self.query_dir.glob('*.jpg'))[self.rank - 1::self.worldsize]
+        self.gal_path = list(self.gal_dir.glob('*.jpg'))[self.rank - 1::self.worldsize]
 
-        num_total_pids = self.num_train_pids + self.num_query_pids
-        num_total_imgs = self.num_train_imgs + self.num_query_imgs + self.num_gallery_imgs
+        self.mode = 'train'
+        self.imgs_path = self.train_path
 
-        logger.info(
-            '=> Market1501 loaded\n'
-            'Dataset statistics:\n'
-            '  ------------------------------\n'
-            '  subset   | # ids | # images\n'
-            '  ------------------------------\n'
-            f'  train    | {self.num_train_pids} | {self.num_train_imgs}\n'
-            f'  query    | {self.num_query_pids} | {self.num_query_imgs}\n'
-            f'  gallery  | {self.num_gallery_pids} | {self.num_gallery_imgs}\n'
-            '------------------------------\n'
-            f'total    | {num_total_pids} | {num_total_imgs}\n'
-            '  ------------------------------'
-        )
+    def set_mode(self, mode='train'):
+        self.mode = mode
+        if self.mode == 'train':
+            self.imgs_path = self.train_path
+        elif self.mode == 'query':
+            self.imgs_path = self.query_path
+        elif self.mode == 'gallery':
+            self.imgs_path = self.gal_path
+        else:
+            raise Exception(f'Wrong mode: {mode}')
 
     def __len__(self):
         """Length of shard."""
@@ -83,7 +80,7 @@ class MarketShardDescriptor(ShardDescriptor):
 
         img = Image.open(img_path)
         img = np.asarray(img)
-        return img, pid, camid
+        return img, (pid, camid)
 
     @property
     def sample_shape(self):
@@ -111,29 +108,3 @@ class MarketShardDescriptor(ShardDescriptor):
             raise RuntimeError(f'{self.query_dir} is not available')
         if not self.gal_dir.exists():
             raise RuntimeError(f'{self.gal_dir} is not available')
-
-    def _process_dir(self, dir_path, label_start=0):
-        """Get data from directory."""
-        img_paths = list(dir_path.glob('*.jpg'))[self.rank - 1::self.worldsize]
-
-        pid_container = set()
-        for img_path in img_paths:
-            pid, _ = map(int, self.pattern.search(img_path.name).groups())
-            if pid == -1:
-                continue  # junk images are just ignored
-            pid_container.add(pid)
-
-        dataset = []
-        for img_path in img_paths:
-            pid, camid = map(int, self.pattern.search(img_path.name).groups())
-            if pid == -1:
-                continue  # junk images are just ignored
-            if label_start == 0:
-                assert 0 <= pid <= 1501  # pid == 0 means background
-            assert 1 <= camid <= 6
-            camid -= 1  # index starts from 0
-            dataset.append((img_path, pid, camid))
-
-        num_pids = len(pid_container)
-        num_imgs = len(dataset)
-        return dataset, num_pids, num_imgs
