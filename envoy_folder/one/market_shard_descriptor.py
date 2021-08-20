@@ -47,7 +47,6 @@ class MarketShardDescriptor(ShardDescriptor):
         self.train_dir = self.dataset_dir / 'bounding_box_train'
         self.query_dir = self.dataset_dir / 'query'
         self.gal_dir = self.dataset_dir / 'bounding_box_test'
-        self.imgs_path = list(self.train_dir.glob('*.jpg'))[self.rank - 1::self.worldsize]
 
         self._check_before_run()
 
@@ -79,7 +78,6 @@ class MarketShardDescriptor(ShardDescriptor):
         pid, camid = map(int, self.pattern.search(img_path.name).groups())
 
         img = Image.open(img_path)
-        img = np.asarray(img)
         return img, (pid, camid)
 
     @property
