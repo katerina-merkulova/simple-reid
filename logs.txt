@@ -1,280 +1,284 @@
+==> Start training 16:56:03
 Results for Epoch 1 Collaborator one validate_agg
-top1:8.2% top5:17.8% top10:24.3% mAP:3.6%
+------------------------------------------------
+top1:8.1% top5:17.9% top10:24.2% mAP:3.6%
 ------------------------------------------------
 Results for Epoch 1 Collaborator two validate_agg
-top1:7.6% top5:16.2% top10:22.2% mAP:3.3%
+top1:7.5% top5:16.2% top10:22.1% mAP:3.3%
 ------------------------------------------------
-ClaLoss:8.15 PairLoss:0.42 Acc:5.50% 
-ClaLoss:8.14 PairLoss:0.43 Acc:5.75% 
+ClaLoss:8.17 PairLoss:0.43 Acc:4.76% 
+ClaLoss:8.12 PairLoss:0.43 Acc:5.24% 
 Results for Epoch 1 Collaborator one validate_local
-top1:42.4% top5:63.9% top10:73.8% mAP:29.0%
+top1:38.3% top5:59.0% top10:67.8% mAP:25.8%
 ------------------------------------------------
 Results for Epoch 1 Collaborator two validate_local
-top1:40.0% top5:63.4% top10:71.5% mAP:26.7%
+top1:43.5% top5:65.2% top10:73.5% mAP:29.1%
 ------------------------------------------------
 Results for Epoch 2 Collaborator two validate_agg
-top1:49.1% top5:70.8% top10:78.1% mAP:34.5%
+top1:48.5% top5:68.7% top10:77.5% mAP:32.8%
 ------------------------------------------------
 Results for Epoch 2 Collaborator one validate_agg
-top1:49.2% top5:72.1% top10:79.3% mAP:34.8%
+top1:48.0% top5:66.9% top10:75.8% mAP:31.8%
 ------------------------------------------------
-ClaLoss:6.56 PairLoss:0.28 Acc:14.95% 
-ClaLoss:6.54 PairLoss:0.27 Acc:16.37% 
-Results for Epoch 2 Collaborator one validate_local
-top1:58.4% top5:77.0% top10:83.8% mAP:42.4%
-------------------------------------------------
+ClaLoss:6.56 PairLoss:0.29 Acc:15.83% 
+ClaLoss:6.57 PairLoss:0.30 Acc:14.60% 
 Results for Epoch 2 Collaborator two validate_local
-top1:59.5% top5:78.8% top10:86.0% mAP:44.2%
+top1:58.0% top5:77.6% top10:84.9% mAP:43.4%
 ------------------------------------------------
-Results for Epoch 3 Collaborator two validate_agg
-top1:64.1% top5:82.7% top10:89.2% mAP:49.5%
+Results for Epoch 2 Collaborator one validate_local
+top1:56.9% top5:77.3% top10:83.5% mAP:41.6%
 ------------------------------------------------
 Results for Epoch 3 Collaborator one validate_agg
-top1:63.8% top5:82.2% top10:87.7% mAP:48.9%
+top1:62.7% top5:80.9% top10:86.7% mAP:47.6%
 ------------------------------------------------
-ClaLoss:5.34 PairLoss:0.22 Acc:27.14% 
-ClaLoss:5.31 PairLoss:0.22 Acc:28.07% 
-Results for Epoch 3 Collaborator two validate_local
-top1:67.6% top5:84.7% top10:89.8% mAP:52.5%
+Results for Epoch 3 Collaborator two validate_agg
+top1:61.5% top5:81.1% top10:86.9% mAP:48.2%
 ------------------------------------------------
+ClaLoss:5.35 PairLoss:0.23 Acc:25.92% 
+ClaLoss:5.35 PairLoss:0.22 Acc:26.37% 
 Results for Epoch 3 Collaborator one validate_local
-top1:65.6% top5:82.7% top10:88.4% mAP:50.2%
+top1:65.6% top5:82.9% top10:88.1% mAP:50.8%
+------------------------------------------------
+Results for Epoch 3 Collaborator two validate_local
+top1:64.6% top5:82.6% top10:88.6% mAP:49.9%
 ------------------------------------------------
 Results for Epoch 4 Collaborator two validate_agg
-top1:70.8% top5:87.8% top10:92.6% mAP:57.1%
+top1:69.4% top5:86.9% top10:91.6% mAP:55.6%
 ------------------------------------------------
 Results for Epoch 4 Collaborator one validate_agg
-top1:71.1% top5:86.1% top10:90.7% mAP:56.9%
+top1:69.2% top5:85.3% top10:89.8% mAP:54.8%
 ------------------------------------------------
-ClaLoss:4.50 PairLoss:0.19 Acc:37.08% 
-ClaLoss:4.40 PairLoss:0.18 Acc:39.29% 
-Results for Epoch 4 Collaborator one validate_local
-top1:72.3% top5:86.7% top10:90.7% mAP:57.8%
-------------------------------------------------
+ClaLoss:4.45 PairLoss:0.19 Acc:38.56% 
+ClaLoss:4.46 PairLoss:0.19 Acc:38.16% 
 Results for Epoch 4 Collaborator two validate_local
-top1:72.3% top5:86.3% top10:91.1% mAP:56.0%
+top1:70.8% top5:86.8% top10:91.4% mAP:56.6%
 ------------------------------------------------
-Results for Epoch 5 Collaborator two validate_agg
-top1:77.7% top5:90.1% top10:93.8% mAP:63.3%
+Results for Epoch 4 Collaborator one validate_local
+top1:68.9% top5:84.1% top10:89.4% mAP:54.1%
 ------------------------------------------------
 Results for Epoch 5 Collaborator one validate_agg
-top1:76.1% top5:88.4% top10:92.7% mAP:62.2%
+top1:73.1% top5:87.6% top10:92.1% mAP:58.6%
 ------------------------------------------------
-ClaLoss:3.80 PairLoss:0.16 Acc:48.72% 
-ClaLoss:3.75 PairLoss:0.15 Acc:48.45% 
-Results for Epoch 5 Collaborator two validate_local
-top1:75.0% top5:88.1% top10:93.4% mAP:60.1%
+Results for Epoch 5 Collaborator two validate_agg
+top1:73.2% top5:87.6% top10:93.0% mAP:59.9%
 ------------------------------------------------
+ClaLoss:3.83 PairLoss:0.17 Acc:47.17% 
+ClaLoss:3.78 PairLoss:0.15 Acc:48.49% 
 Results for Epoch 5 Collaborator one validate_local
-top1:73.6% top5:87.7% top10:91.8% mAP:58.6%
+top1:73.8% top5:88.6% top10:92.4% mAP:59.8%
 ------------------------------------------------
-Results for Epoch 6 Collaborator one validate_agg
-top1:77.5% top5:89.8% top10:93.5% mAP:63.6%
+Results for Epoch 5 Collaborator two validate_local
+top1:73.6% top5:88.2% top10:93.2% mAP:59.5%
 ------------------------------------------------
 Results for Epoch 6 Collaborator two validate_agg
-top1:76.9% top5:91.4% top10:94.1% mAP:63.9%
+top1:77.9% top5:91.1% top10:94.5% mAP:64.1%
 ------------------------------------------------
-ClaLoss:3.27 PairLoss:0.13 Acc:56.35% 
-ClaLoss:3.27 PairLoss:0.14 Acc:56.23% 
-Results for Epoch 6 Collaborator one validate_local
-top1:79.4% top5:89.8% top10:93.4% mAP:65.4%
+Results for Epoch 6 Collaborator one validate_agg
+top1:77.6% top5:90.7% top10:93.4% mAP:63.8%
 ------------------------------------------------
+ClaLoss:3.24 PairLoss:0.14 Acc:56.55% 
+ClaLoss:3.30 PairLoss:0.14 Acc:56.04% 
 Results for Epoch 6 Collaborator two validate_local
-top1:78.4% top5:91.0% top10:94.2% mAP:65.1%
+top1:77.2% top5:91.0% top10:94.3% mAP:63.6%
 ------------------------------------------------
-Results for Epoch 7 Collaborator two validate_agg
-top1:81.1% top5:92.6% top10:96.0% mAP:68.9%
+Results for Epoch 6 Collaborator one validate_local
+top1:73.9% top5:89.3% top10:92.7% mAP:61.7%
 ------------------------------------------------
 Results for Epoch 7 Collaborator one validate_agg
-top1:82.2% top5:92.1% top10:94.6% mAP:68.6%
+top1:78.8% top5:90.6% top10:93.7% mAP:65.5%
 ------------------------------------------------
-ClaLoss:2.90 PairLoss:0.13 Acc:62.93% 
-ClaLoss:2.92 PairLoss:0.13 Acc:62.55% 
-Results for Epoch 7 Collaborator two validate_local
-top1:78.1% top5:91.1% top10:94.7% mAP:66.1%
+Results for Epoch 7 Collaborator two validate_agg
+top1:79.1% top5:91.7% top10:95.3% mAP:66.5%
 ------------------------------------------------
+ClaLoss:2.87 PairLoss:0.12 Acc:63.54% 
 Results for Epoch 7 Collaborator one validate_local
-top1:79.0% top5:89.8% top10:93.4% mAP:65.6%
+top1:77.9% top5:89.7% top10:93.3% mAP:64.3%
 ------------------------------------------------
-Results for Epoch 8 Collaborator one validate_agg
-top1:82.3% top5:92.2% top10:95.1% mAP:69.3%
+ClaLoss:2.80 PairLoss:0.12 Acc:64.43% 
+Results for Epoch 7 Collaborator two validate_local
+top1:79.1% top5:91.9% top10:94.5% mAP:65.2%
 ------------------------------------------------
 Results for Epoch 8 Collaborator two validate_agg
-top1:82.7% top5:93.2% top10:95.8% mAP:69.6%
+top1:81.3% top5:93.4% top10:96.2% mAP:68.5%
 ------------------------------------------------
-ClaLoss:2.58 PairLoss:0.11 Acc:68.07% 
-ClaLoss:2.55 PairLoss:0.11 Acc:68.45% 
+Results for Epoch 8 Collaborator one validate_agg
+top1:80.5% top5:91.9% top10:94.7% mAP:67.9%
+------------------------------------------------
+ClaLoss:2.55 PairLoss:0.11 Acc:68.30% 
+ClaLoss:2.61 PairLoss:0.12 Acc:67.47% 
 Results for Epoch 8 Collaborator one validate_local
-top1:79.4% top5:91.8% top10:94.4% mAP:67.9%
+top1:79.0% top5:91.2% top10:94.0% mAP:66.9%
 ------------------------------------------------
 Results for Epoch 8 Collaborator two validate_local
-top1:80.8% top5:93.3% top10:95.9% mAP:68.7%
+top1:80.7% top5:92.5% top10:95.8% mAP:67.4%
 ------------------------------------------------
 Results for Epoch 9 Collaborator two validate_agg
-top1:85.4% top5:94.5% top10:96.9% mAP:72.2%
+top1:83.6% top5:94.1% top10:96.8% mAP:71.1%
 ------------------------------------------------
 Results for Epoch 9 Collaborator one validate_agg
-top1:83.8% top5:93.5% top10:95.6% mAP:71.5%
+top1:82.3% top5:92.8% top10:95.3% mAP:70.6%
 ------------------------------------------------
-ClaLoss:2.30 PairLoss:0.10 Acc:72.95% 
-ClaLoss:2.26 PairLoss:0.10 Acc:74.58% 
+ClaLoss:2.32 PairLoss:0.10 Acc:73.07% 
+ClaLoss:2.33 PairLoss:0.11 Acc:72.53% 
 Results for Epoch 9 Collaborator one validate_local
-top1:82.0% top5:92.7% top10:94.8% mAP:69.0%
+top1:81.1% top5:91.3% top10:94.6% mAP:68.3%
 ------------------------------------------------
 Results for Epoch 9 Collaborator two validate_local
-top1:81.9% top5:92.2% top10:95.0% mAP:68.3%
+top1:82.5% top5:93.7% top10:95.8% mAP:69.5%
 ------------------------------------------------
 Results for Epoch 10 Collaborator two validate_agg
-top1:85.5% top5:94.2% top10:96.6% mAP:72.5%
+top1:85.0% top5:94.5% top10:96.7% mAP:72.0%
 ------------------------------------------------
 Results for Epoch 10 Collaborator one validate_agg
-top1:84.3% top5:93.1% top10:95.5% mAP:71.6%
+top1:82.5% top5:92.8% top10:95.3% mAP:71.0%
 ------------------------------------------------
-ClaLoss:2.09 PairLoss:0.09 Acc:76.84% 
-ClaLoss:2.09 PairLoss:0.09 Acc:76.70% 
-Results for Epoch 10 Collaborator one validate_local
-top1:82.7% top5:92.2% top10:95.2% mAP:70.0%
-------------------------------------------------
+ClaLoss:2.11 PairLoss:0.09 Acc:76.41% 
+ClaLoss:2.05 PairLoss:0.09 Acc:77.86% 
 Results for Epoch 10 Collaborator two validate_local
-top1:82.6% top5:93.4% top10:96.1% mAP:70.4%
+top1:82.4% top5:94.4% top10:96.3% mAP:70.0%
 ------------------------------------------------
-Results for Epoch 11 Collaborator two validate_agg
-top1:85.8% top5:95.0% top10:96.8% mAP:73.7%
+Results for Epoch 10 Collaborator one validate_local
+top1:80.8% top5:92.3% top10:94.7% mAP:69.5%
 ------------------------------------------------
 Results for Epoch 11 Collaborator one validate_agg
-top1:85.2% top5:94.1% top10:96.0% mAP:73.3%
+top1:84.1% top5:93.0% top10:95.4% mAP:71.4%
 ------------------------------------------------
-ClaLoss:1.91 PairLoss:0.09 Acc:80.75% 
-ClaLoss:1.96 PairLoss:0.09 Acc:79.53% 
-Results for Epoch 11 Collaborator two validate_local
-top1:82.4% top5:93.5% top10:96.1% mAP:70.9%
+Results for Epoch 11 Collaborator two validate_agg
+top1:84.7% top5:95.6% top10:97.3% mAP:72.4%
 ------------------------------------------------
+ClaLoss:1.93 PairLoss:0.09 Acc:79.81% 
+ClaLoss:1.94 PairLoss:0.09 Acc:80.00% 
 Results for Epoch 11 Collaborator one validate_local
-top1:83.2% top5:93.4% top10:95.9% mAP:71.2%
+top1:81.9% top5:91.8% top10:94.7% mAP:69.3%
 ------------------------------------------------
-Results for Epoch 12 Collaborator one validate_agg
-top1:85.7% top5:94.1% top10:96.5% mAP:74.0%
+Results for Epoch 11 Collaborator two validate_local
+top1:83.2% top5:93.9% top10:96.3% mAP:71.1%
 ------------------------------------------------
 Results for Epoch 12 Collaborator two validate_agg
-top1:87.3% top5:95.3% top10:97.3% mAP:74.8%
+top1:86.7% top5:95.2% top10:97.2% mAP:74.1%
 ------------------------------------------------
-ClaLoss:1.78 PairLoss:0.08 Acc:81.96% 
-ClaLoss:1.78 PairLoss:0.08 Acc:82.71% 
-Results for Epoch 12 Collaborator one validate_local
-top1:81.7% top5:92.6% top10:95.6% mAP:70.1%
+Results for Epoch 12 Collaborator one validate_agg
+top1:84.4% top5:93.8% top10:95.9% mAP:72.8%
 ------------------------------------------------
+ClaLoss:1.82 PairLoss:0.08 Acc:81.74% 
+ClaLoss:1.79 PairLoss:0.08 Acc:82.57% 
 Results for Epoch 12 Collaborator two validate_local
-top1:84.6% top5:94.0% top10:96.1% mAP:72.3%
+top1:86.7% top5:95.1% top10:96.7% mAP:73.0%
 ------------------------------------------------
-Results for Epoch 13 Collaborator two validate_agg
-top1:86.7% top5:94.0% top10:96.4% mAP:74.1%
+Results for Epoch 12 Collaborator one validate_local
+top1:83.2% top5:93.0% top10:96.0% mAP:71.6%
 ------------------------------------------------
 Results for Epoch 13 Collaborator one validate_agg
-top1:86.1% top5:94.4% top10:96.3% mAP:74.3%
+top1:85.5% top5:94.7% top10:96.5% mAP:74.4%
 ------------------------------------------------
-ClaLoss:1.63 PairLoss:0.07 Acc:85.54% 
-ClaLoss:1.63 PairLoss:0.07 Acc:84.90% 
-Results for Epoch 13 Collaborator two validate_local
-top1:84.7% top5:94.6% top10:96.4% mAP:72.4%
+Results for Epoch 13 Collaborator two validate_agg
+top1:87.1% top5:96.1% top10:97.6% mAP:75.2%
 ------------------------------------------------
+ClaLoss:1.69 PairLoss:0.08 Acc:83.13% 
+ClaLoss:1.62 PairLoss:0.07 Acc:85.09% 
 Results for Epoch 13 Collaborator one validate_local
-top1:83.5% top5:93.4% top10:95.9% mAP:71.6%
+top1:82.9% top5:93.0% top10:95.1% mAP:70.6%
 ------------------------------------------------
-Results for Epoch 14 Collaborator one validate_agg
-top1:86.7% top5:94.8% top10:96.5% mAP:75.2%
+Results for Epoch 13 Collaborator two validate_local
+top1:85.3% top5:94.2% top10:96.2% mAP:72.4%
 ------------------------------------------------
 Results for Epoch 14 Collaborator two validate_agg
-top1:87.2% top5:95.7% top10:97.5% mAP:75.4%
+top1:87.5% top5:95.8% top10:97.3% mAP:74.5%
 ------------------------------------------------
-ClaLoss:1.54 PairLoss:0.07 Acc:86.37% 
-ClaLoss:1.55 PairLoss:0.07 Acc:86.98% 
+Results for Epoch 14 Collaborator one validate_agg
+top1:85.1% top5:94.2% top10:96.4% mAP:74.5%
+------------------------------------------------
+ClaLoss:1.62 PairLoss:0.08 Acc:84.48% 
+ClaLoss:1.57 PairLoss:0.08 Acc:85.59% 
 Results for Epoch 14 Collaborator one validate_local
-top1:84.5% top5:93.3% top10:95.6% mAP:72.5%
+top1:84.0% top5:93.6% top10:95.6% mAP:72.8%
 ------------------------------------------------
 Results for Epoch 14 Collaborator two validate_local
-top1:86.4% top5:95.4% top10:97.6% mAP:75.3%
-------------------------------------------------
-Results for Epoch 15 Collaborator one validate_agg
-top1:87.0% top5:95.2% top10:96.6% mAP:76.3%
+top1:86.1% top5:94.6% top10:96.9% mAP:72.9%
 ------------------------------------------------
 Results for Epoch 15 Collaborator two validate_agg
-top1:89.0% top5:96.3% top10:97.9% mAP:76.7%
+top1:87.2% top5:95.7% top10:97.7% mAP:75.4%
 ------------------------------------------------
-ClaLoss:1.47 PairLoss:0.07 Acc:87.53% 
-ClaLoss:1.40 PairLoss:0.07 Acc:88.89% 
+Results for Epoch 15 Collaborator one validate_agg
+top1:85.9% top5:94.6% top10:96.3% mAP:75.1%
+------------------------------------------------
+ClaLoss:1.48 PairLoss:0.07 Acc:87.48% 
+ClaLoss:1.54 PairLoss:0.07 Acc:86.32% 
 Results for Epoch 15 Collaborator one validate_local
-top1:85.9% top5:94.3% top10:95.7% mAP:74.8%
+top1:83.1% top5:92.8% top10:95.7% mAP:72.1%
 ------------------------------------------------
 Results for Epoch 15 Collaborator two validate_local
-top1:85.6% top5:95.5% top10:97.2% mAP:74.4%
+top1:85.8% top5:94.9% top10:97.0% mAP:74.4%
 ------------------------------------------------
 Results for Epoch 16 Collaborator two validate_agg
-top1:88.8% top5:96.2% top10:97.3% mAP:77.1%
+top1:87.6% top5:95.8% top10:97.3% mAP:76.2%
 ------------------------------------------------
 Results for Epoch 16 Collaborator one validate_agg
-top1:87.8% top5:94.6% top10:96.6% mAP:76.5%
+top1:86.1% top5:94.9% top10:96.9% mAP:74.9%
 ------------------------------------------------
-ClaLoss:1.39 PairLoss:0.06 Acc:88.63% 
-ClaLoss:1.33 PairLoss:0.06 Acc:89.70% 
+ClaLoss:1.41 PairLoss:0.07 Acc:88.23% 
+ClaLoss:1.41 PairLoss:0.07 Acc:87.73% 
 Results for Epoch 16 Collaborator one validate_local
-top1:85.4% top5:93.7% top10:96.0% mAP:74.5%
+top1:83.9% top5:93.4% top10:96.2% mAP:73.5%
 ------------------------------------------------
 Results for Epoch 16 Collaborator two validate_local
-top1:86.1% top5:95.7% top10:97.3% mAP:75.6%
+top1:85.8% top5:94.8% top10:96.5% mAP:73.8%
 ------------------------------------------------
 Results for Epoch 17 Collaborator two validate_agg
-top1:88.5% top5:96.0% top10:98.0% mAP:77.5%
+top1:87.9% top5:96.8% top10:98.0% mAP:76.8%
 ------------------------------------------------
 Results for Epoch 17 Collaborator one validate_agg
-top1:87.4% top5:95.3% top10:97.1% mAP:77.2%
+top1:86.0% top5:95.4% top10:96.9% mAP:75.7%
 ------------------------------------------------
-ClaLoss:1.27 PairLoss:0.06 Acc:90.12% 
-ClaLoss:1.35 PairLoss:0.06 Acc:88.98% 
-Results for Epoch 17 Collaborator one validate_local
-top1:85.2% top5:93.9% top10:95.9% mAP:73.9%
-------------------------------------------------
+ClaLoss:1.31 PairLoss:0.06 Acc:89.31% 
+ClaLoss:1.35 PairLoss:0.06 Acc:89.18% 
 Results for Epoch 17 Collaborator two validate_local
-top1:86.4% top5:94.8% top10:97.2% mAP:75.2%
+top1:86.9% top5:95.5% top10:97.2% mAP:75.5%
 ------------------------------------------------
-Results for Epoch 18 Collaborator two validate_agg
-top1:87.8% top5:95.7% top10:97.5% mAP:77.0%
+Results for Epoch 17 Collaborator one validate_local
+top1:85.6% top5:93.8% top10:96.0% mAP:74.1%
 ------------------------------------------------
 Results for Epoch 18 Collaborator one validate_agg
-top1:87.3% top5:95.0% top10:96.5% mAP:76.7%
+top1:86.5% top5:95.4% top10:96.9% mAP:76.6%
 ------------------------------------------------
-ClaLoss:1.26 PairLoss:0.06 Acc:90.95% 
-ClaLoss:1.21 PairLoss:0.06 Acc:90.68% 
+Results for Epoch 18 Collaborator two validate_agg
+top1:89.6% top5:96.4% top10:98.1% mAP:78.3%
+------------------------------------------------
+ClaLoss:1.23 PairLoss:0.06 Acc:90.71% 
+ClaLoss:1.28 PairLoss:0.06 Acc:89.58% 
 Results for Epoch 18 Collaborator one validate_local
-top1:84.7% top5:93.7% top10:96.2% mAP:73.6%
+top1:85.6% top5:93.7% top10:96.3% mAP:74.3%
 ------------------------------------------------
 Results for Epoch 18 Collaborator two validate_local
-top1:86.3% top5:95.4% top10:96.9% mAP:75.5%
+top1:86.5% top5:94.8% top10:96.8% mAP:74.6%
 ------------------------------------------------
 Results for Epoch 19 Collaborator two validate_agg
-top1:88.7% top5:96.0% top10:97.6% mAP:77.6%
+top1:88.8% top5:96.5% top10:97.8% mAP:76.9%
 ------------------------------------------------
 Results for Epoch 19 Collaborator one validate_agg
-top1:87.1% top5:95.2% top10:96.7% mAP:77.2%
+top1:87.3% top5:95.0% top10:96.4% mAP:76.2%
 ------------------------------------------------
-ClaLoss:1.15 PairLoss:0.05 Acc:92.17% 
-ClaLoss:1.23 PairLoss:0.06 Acc:90.24% 
+ClaLoss:1.19 PairLoss:0.06 Acc:91.70% 
+ClaLoss:1.24 PairLoss:0.06 Acc:90.61% 
 Results for Epoch 19 Collaborator one validate_local
-top1:85.5% top5:94.5% top10:96.5% mAP:75.0%
+top1:84.9% top5:93.8% top10:95.8% mAP:73.5%
 ------------------------------------------------
 Results for Epoch 19 Collaborator two validate_local
-top1:87.9% top5:95.1% top10:97.0% mAP:76.3%
+top1:85.5% top5:95.2% top10:96.9% mAP:74.1%
 ------------------------------------------------
 Results for Epoch 20 Collaborator two validate_agg
-top1:89.6% top5:95.8% top10:97.8% mAP:78.4%
+top1:87.9% top5:96.1% top10:97.7% mAP:76.9%
 ------------------------------------------------
 Results for Epoch 20 Collaborator one validate_agg
-top1:88.0% top5:95.3% top10:97.2% mAP:78.1%
+top1:86.8% top5:95.3% top10:96.5% mAP:76.3%
 ------------------------------------------------
-ClaLoss:1.13 PairLoss:0.05 Acc:91.82% 
-ClaLoss:1.10 PairLoss:0.05 Acc:92.47% 
-Results for Epoch 20 Collaborator two validate_local
-top1:87.3% top5:95.5% top10:97.1% mAP:76.5%
-------------------------------------------------
+ClaLoss:1.17 PairLoss:0.05 Acc:91.41% 
+ClaLoss:1.08 PairLoss:0.05 Acc:92.92% 
 Results for Epoch 20 Collaborator one validate_local
-top1:85.6% top5:94.5% top10:96.5% mAP:75.2%
+top1:85.9% top5:94.1% top10:96.2% mAP:74.8%
 ------------------------------------------------
+Results for Epoch 20 Collaborator two validate_local
+top1:87.3% top5:95.4% top10:97.7% mAP:76.5%
+------------------------------------------------
+==> End training 18:12:03
+Training time: 1:16:00
